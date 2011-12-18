@@ -1,0 +1,26 @@
+
+=====================================================================
+          WordNet Blast
+=====================================================================
+
+In memory access to the wordnet onthology.
+
+DEPENDENCIES:
+        boost 1.46
+        wordnet 3
+
+INSTALL:
+        cmake CMakeLists.txt
+        make
+
+USAGE:
+        #include "wordnet.hh"
+
+        int main() {
+                wnb::wordnet wn(PATH_TO_WORDNET);
+                nltk_similarity path_similarity(wn);
+                std::vector<synset> synsets1 = wn.get_synsets("cat");
+                std::vector<synset> synsets2 = wn.get_synsets("dog");
+                float d = path_similarity(synsets1[0], synsets2[0], 6);
+        }
+        
