@@ -23,4 +23,13 @@ USAGE:
                 std::vector<synset> synsets2 = wn.get_synsets("dog");
                 float d = path_similarity(synsets1[0], synsets2[0], 6);
         }
-        
+
+BUGS:
+        - Word morphing is currently not called ( morphword(cword,p) ).
+          Morphing can be used but still relies on the original wordnet,
+          file-oriented, library, and thus is a lot slower than it could
+          be. Access to wordnet without morphing will fail in most cases.
+
+          Morphing can be made in-memory easily. I am currently lacking
+          of time: Contact me if you would like to use the library.
+
