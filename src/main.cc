@@ -88,7 +88,7 @@ int main(int argc, char ** argv)
   std::string word        = argv[2];
 
   // read test file
-  std::string list = ext::read_file("./check/list.txt");
+  std::string list = ext::read_file("../check/list.txt");
   std::vector<std::string> wl =  ext::split(list);
   std::vector<std::string> word_list =  ext::s_unique(wl);
 

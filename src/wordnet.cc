@@ -82,4 +82,8 @@ namespace wnb
     return synsetv;
   }
 
+  std::vector<std::string> morphword(std::string word, int pos)
+  {
+  }
+
 } // end of namespace wnb

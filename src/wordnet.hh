@@ -29,10 +29,10 @@ namespace wnb
   /// Synset
   struct synset
   {
-    int synset_offset_;  ///< ***Deprecated*** @deprecated in-file wordnet
-    int lex_filenum;
+    int  synset_offset_;  ///< ***Deprecated*** @deprecated in-file wordnet
+    int  lex_filenum;
     char ss_type_;       ///< ***Deprecated*** @deprecated unsafe pos
-    int w_cnt;
+    int  w_cnt;
     std::vector<std::string> words;
     std::vector<int> lex_ids;
     int p_cnt;
@@ -95,16 +95,17 @@ namespace wnb
     get_synsets(const std::string& word);
 
     //FIXME: todo
-    std::vector<synset>
-    get_synsets(const std::string& word, char pos);
+    std::vector<synset> get_synsets(const std::string& word, char pos);
 
     //FIXME: todo
-    std::vector<synset>
-    get_synset(const std::string& word, char pos, int i);
+    std::vector<synset> get_synset(const std::string& word, char pos, int i);
 
-    std::vector<index> index_list; ///< index list
-    graph wordnet_graph;           ///< synsets graph
-    info_helper info;              ///< helper object
+    std::vector<index> index_list;    ///< index list
+    graph              wordnet_graph; ///< synsets graph
+    info_helper        info;          ///< helper object
+
+    typedef std::map<std::string,std::string> exc_t;
+    std::map<std::string, exc_t> exc;
   };
 
 } // end of namespace wnb

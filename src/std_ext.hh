@@ -25,7 +25,7 @@ namespace ext
     std::ifstream is;
     is.open(fn.c_str(), std::ios::binary);
     if (!is.is_open())
-      throw file_not_found;
+      throw std::runtime_error("File not found: " + fn);
 
     std::string str((std::istreambuf_iterator<char>(is)),
                      std::istreambuf_iterator<char>());

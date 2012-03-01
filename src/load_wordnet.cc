@@ -221,11 +221,32 @@ namespace wnb
       fin.close();
     }
 
+
+    void load_wordnet_exc(const std::string& dn, std::string cat,
+                          wordnet& wn, info_helper& info)
+    {
+      std::string fn = dn + cat + ".exc";
+      std::ifstream fin(fn.c_str());
+      if (!fin.is_open())
+        throw std::runtime_error("File missing: " + fn);
+
+      std::map<std::string,std::string>& exc = wn.exc[cat];
+
+      while (!fin.eof())
+      {
+        std::string key, value;
+        fin >> key;
+        fin >> value;
+        exc[key] = value;
+      }
+    }
+
     void load_wordnet_cat(const std::string dn, std::string cat,
                           wordnet& wn, info_helper& info)
     {
       load_wordnet_data((dn + "data." + cat), wn, info);
       load_wordnet_index((dn + "index." + cat), wn, info);
+      load_wordnet_exc(dn, cat, wn, info);
     }
 
   } // end of anonymous namespace
