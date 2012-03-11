@@ -74,10 +74,10 @@ namespace wnb
         //http://wordnet.princeton.edu/wordnet/man/wndb.5WN.html#sect3
         //pointer_symbol  synset_offset  pos  source/target
         std::string pointer_symbol_;
-        int synset_offset;
+        int   synset_offset;
         pos_t pos;
-        int src;
-        int trgt;
+        int   src;
+        int   trgt;
 
         srow >> pointer_symbol_;
         srow >> synset_offset;
@@ -147,7 +147,7 @@ namespace wnb
 
 
     // Parse data.noun files
-    void load_wordnet_data(const std::string fn, wordnet& wn, info_helper& info)
+    void load_wordnet_data(const std::string& fn, wordnet& wn, info_helper& info)
     {
       std::ifstream fin(fn.c_str());
       if (!fin.is_open())
@@ -201,7 +201,7 @@ namespace wnb
     }
 
 
-    void load_wordnet_index(const std::string fn, wordnet& wn, info_helper& info)
+    void load_wordnet_index(const std::string& fn, wordnet& wn, info_helper& info)
     {
       std::ifstream fin(fn.c_str());
       if (!fin.is_open())
@@ -230,7 +230,7 @@ namespace wnb
       if (!fin.is_open())
         throw std::runtime_error("File missing: " + fn);
 
-      std::map<std::string,std::string>& exc = wn.exc[cat];
+      std::map<std::string,std::string>& exc = wn.exc[get_pos_from_name(cat)];
 
       while (!fin.eof())
       {

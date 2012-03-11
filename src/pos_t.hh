@@ -12,8 +12,22 @@ namespace wnb
     N,
     R,
     V,
-    S
+    S,
+    UNKNOWN
   };
+
+  inline pos_t get_pos_from_name(const std::string& pos)
+  {
+    if (pos == "adj")
+      return A;
+    if (pos == "noun")
+      return N;
+    if (pos == "adv")
+      return R;
+    if (pos == "verb")
+      return V;
+    return UNKNOWN;
+  }
 
 } // end of namespace wncpp
 

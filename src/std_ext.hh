@@ -2,22 +2,13 @@
 # define _STD_EXT_HH
 
 # include <string>
+# include <sstream>
 # include <fstream>
 # include <algorithm>
 # include <stdexcept>
 
 namespace ext
 {
-  // My exception
-  class file_not_found : std::exception
-  {
-    virtual const char* what() const throw()
-    {
-      return "File not found";
-    }
-  } file_not_found;
-
-
   /// Read a file, return the content as a C++ string
   inline
   std::string read_file(const std::string& fn)
@@ -44,6 +35,20 @@ namespace ext
          std::back_inserter< std::vector<std::string> >(tokens));
     return tokens;
   }
+
+  inline
+  bool
+  ends_with(const std::string& str, const std::string& ending)
+  {
+    if (str.length() >= ending.length())
+    {
+      int cmp = str.compare(str.length() - ending.length(),
+                            ending.length(), ending);
+      return (0 == cmp);
+    }
+    return false;
+}
+
 
   /// Sorted unique
   template <typename T>

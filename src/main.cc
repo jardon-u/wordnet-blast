@@ -39,7 +39,8 @@ struct ws
 /// Compute similarity of word with words in word list
 std::vector<ws>
 compute_similarities(wordnet& wn,
-                     std::string& word, std::vector<std::string>& word_list)
+                     std::string& word,
+                     std::vector<std::string>& word_list)
 {
   std::vector<ws> wslist;
   std::vector<synset> synsets1 = wn.get_synsets(word);

@@ -7,17 +7,13 @@
 # include <vector>
 //# include <boost/filesystem.hpp>
 
-#include "wn.h"
-
-//https://bugs.launchpad.net/ubuntu/+source/boost/+bug/270873
+//Possible https://bugs.launchpad.net/ubuntu/+source/boost/+bug/270873
 # include <boost/graph/graph_traits.hpp>
 # include <boost/graph/adjacency_list.hpp>
 
 # include "load_wordnet.hh"
 # include "pos_t.hh"
 # include "bfs.hh"
-
-//namespace fs = boost::filesystem;
 
 namespace wnb
 {
@@ -61,13 +57,13 @@ namespace wnb
   struct index
   {
     std::string lemma;
-    char pos_;          ///< ***Deprecated*** @deprecated unsafe pos
-    int synset_cnt;
-    int p_cnt;
-    std::vector<std::string> ptr_symbols;
-    int sense_cnt;
+    char  pos_;        ///< ***Deprecated*** @deprecated unsafe pos
+    int   synset_cnt;
+    int   p_cnt;
+    int   sense_cnt;
     float tagsense_cnt;
-    std::vector<int> synset_offsets;
+    std::vector<std::string> ptr_symbols;
+    std::vector<int>         synset_offsets;
 
     // extra
     std::vector<int> ids;
@@ -91,8 +87,7 @@ namespace wnb
     wordnet(const std::string& wordnet_dir);
 
     /// Return synsets matching word
-    std::vector<synset>
-    get_synsets(const std::string& word);
+    std::vector<synset> get_synsets(const std::string& word);
 
     //FIXME: todo
     std::vector<synset> get_synsets(const std::string& word, char pos);
@@ -100,12 +95,16 @@ namespace wnb
     //FIXME: todo
     std::vector<synset> get_synset(const std::string& word, char pos, int i);
 
+    std::string wordbase(const std::string& word, int ender);
+
+    std::string morphword(const std::string& word, pos_t pos);
+
     std::vector<index> index_list;    ///< index list
     graph              wordnet_graph; ///< synsets graph
     info_helper        info;          ///< helper object
 
     typedef std::map<std::string,std::string> exc_t;
-    std::map<std::string, exc_t> exc;
+    std::map<pos_t, exc_t> exc;
   };
 
 } // end of namespace wnb
