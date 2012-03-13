@@ -45,22 +45,18 @@ namespace wnb
     index light_index;
     light_index.lemma = word;
 
-    // const_cast for compability reason with libwordnet (morphword)
-    // (safe if cword not modified) no need to free memory
-    char * cword = const_cast<char*>(word.c_str());
-
     //last pos is S and must not be given to morphword.
     static const unsigned nb_pos = POS_ARRAY_SIZE-1;
     for (unsigned p = 1; p <= nb_pos; p++)
     {
       //morphword Time consuming compare to path_similarity (x6)
-      const char * mword = cword;//morphword(cword,p);
-      if (mword == NULL && p != nb_pos)
+      std::string mword = morphword(word, (pos_t)p);
+      if (mword == "" && p != nb_pos)
         continue;
-      if (mword == NULL)
-        mword = word.c_str();
-      light_index.lemma = std::string(mword);
-      //std::cout <<       light_index.lemma << " ";
+      if (mword == "")
+        mword = word;
+      light_index.lemma = mword;
+      //std::cout << std::endl << "lemma "<<      light_index.lemma << " ";
 
       // binary_search
       std::pair<vi::iterator,vi::iterator> bounds =
@@ -71,6 +67,11 @@ namespace wnb
       for (it = bounds.first; it != bounds.second; it++)
         for (unsigned i = 0; i < it->synset_offsets.size(); i++)
         {
+          std::cout << "(" << it->synset_offsets[i] << "/" << it->pos << ")" << std::endl;
+          std::cout << "map.size " << info.pos_maps[it->pos].size() << std::endl;
+          std::cout << "indice_offset[pos] " << info.indice_offset[it->pos] << std::endl;
+          std::cout << "map[offset] " << info.pos_maps[it->pos][it->synset_offsets[i]]
+                    << std::endl;
           int u = info.compute_indice(it->synset_offsets[i], it->pos);
           synsets.insert(wordnet_graph[u]);
         }
@@ -146,8 +147,8 @@ namespace wnb
     std::string morphed;
     for  (int i = 0; i < pos_cnt; i++)
     {
-     morphed = wordbase(tmpbuf, (i + offset));
-      if (morphed == tmpbuf && is_defined(morphed, pos))
+      morphed = wordbase(tmpbuf, (i + offset));
+      if (morphed == tmpbuf)// && is_defined(morphed, pos))
         return morphed + end;
     }
 

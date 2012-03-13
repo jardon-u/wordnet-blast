@@ -85,6 +85,11 @@ namespace wnb
     if (pos == S)
       pos = A;
     std::map<int,int>& map = pos_maps[pos];
+
+    //std::cout << "map.size " << map.size() << std::endl;
+    //std::cout << "indice_offset[pos] " << indice_offset[pos] << std::endl;
+    //std::cout << "map[offset] " << map[offset] << std::endl;
+
     return indice_offset[pos] + map[offset];
   }
 
