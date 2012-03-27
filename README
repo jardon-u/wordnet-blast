@@ -16,12 +16,18 @@ INSTALL:
 USAGE:
         #include "wordnet.hh"
 
-        int main() {
-                wnb::wordnet wn(PATH_TO_WORDNET);
-                nltk_similarity path_similarity(wn);
-                std::vector<synset> synsets1 = wn.get_synsets("cat");
-                std::vector<synset> synsets2 = wn.get_synsets("dog");
-                float d = path_similarity(synsets1[0], synsets2[0], 6);
+        using namespace std;
+        using namespace wnb;
+
+        int main()
+        {
+                wordnet wn(PATH_TO_WORDNET);
+
+                vector<synset> synsets1 = wn.get_synsets("cat");
+                vector<synset> synsets2 = wn.get_synsets("dog");
+
+                nltk_similarity similarity(wn);
+                float d = similarity(synsets1[0], synsets2[0], 6);
         }
 
 BUGS:
