@@ -77,7 +77,7 @@ namespace wnb
     indice_offset[1] = pos_maps[A].size(); // N
     indice_offset[2] = indice_offset[1] + pos_maps[N].size(); // R
     indice_offset[3] = indice_offset[2] + pos_maps[R].size(); // V
-    indice_offset[4] = indice_offset[3]; // S (???)
+    indice_offset[4] = indice_offset[3] + pos_maps[V].size(); // S (???)
   }
 
   int info_helper::compute_indice(int offset, pos_t pos)
@@ -85,10 +85,6 @@ namespace wnb
     if (pos == S)
       pos = A;
     std::map<int,int>& map = pos_maps[pos];
-
-    //std::cout << "map.size " << map.size() << std::endl;
-    //std::cout << "indice_offset[pos] " << indice_offset[pos] << std::endl;
-    //std::cout << "map[offset] " << map[offset] << std::endl;
 
     return indice_offset[pos] + map[offset];
   }
@@ -101,16 +97,18 @@ namespace wnb
   preprocess_data(const std::string& fn)
   {
     std::map<int,int> map;
-    std::fstream file(fn.c_str());
+    std::ifstream file(fn.c_str());
+    if (!file.is_open())
+      throw std::runtime_error("preprocess_data: File not found: " + fn);
 
-    static const int MAX_LENGTH = 20480;
+    static const int MAX_LENGTH = 20480; // must be that large
     char row[MAX_LENGTH];
 
     //skip header
     for(unsigned i = 0; i < 29; i++)
       file.getline(row, MAX_LENGTH);
 
-    unsigned ind = 0;
+    std::size_t ind = 0;
     //parse data line
     while (file.getline(row, MAX_LENGTH))
     {
@@ -134,6 +132,8 @@ namespace wnb
     info.pos_maps[R] = preprocess_data((dn + "data.adv"));  // adv_map
     info.pos_maps[N] = preprocess_data((dn + "data.noun")); // noun_map
     info.pos_maps[V] = preprocess_data((dn + "data.verb")); // verb_map
+
+    info.update_pos_maps();
 
     return info;
   }

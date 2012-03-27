@@ -4,7 +4,7 @@
 namespace wnb
 {
 
-  static const int  POS_ARRAY_SIZE = 5;
+  static const std::size_t POS_ARRAY_SIZE = 5;
   static const char POS_ARRAY[POS_ARRAY_SIZE] = {'a', 'n', 'r', 'v', 's'};
 
   enum pos_t {

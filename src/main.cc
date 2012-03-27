@@ -90,18 +90,19 @@ void similarity_test(wordnet&     wn,
 void batch_test(wordnet& wn,
                 std::vector<std::string>& word_list)
 {
-  for (std::size_t i; i < word_list.size(); i++)
+  for (std::size_t i = 0; i < word_list.size(); i++)
   {
     std::string& word = word_list[i];
-    std::cout << word << " |";
+    std::cout << "=== " << word << " === \n";
 
     std::vector<synset> synsets = wn.get_synsets(word);
-    std::cout << synsets.size();
+    std::cout << synsets.size() << "\n";
     for (std::size_t j = 0; j < synsets.size(); j++)
     {
-      std::cout << "| pos " << (int)synsets[j].pos << " ";
+      std::cout << "  pos " << (int)synsets[j].pos << "| ";
       for (std::size_t k = 0; k < synsets[j].words.size(); k++)
-        std::cout << synsets[j].words[k] << ", ";
+        std::cout <<  synsets[j].words[k] << ", ";
+    std::cout << std::endl;
     }
     std::cout << std::endl;
   }

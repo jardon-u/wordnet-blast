@@ -25,8 +25,8 @@ namespace wnb
     static const int  offsets[NUMPARTS];
     static const int  cnts[NUMPARTS];
 
-    typedef std::map<int,int>      i2of_t; ///< indice/offset correspondences
-    typedef std::map<char, i2of_t> pos_i2of_t; ///< pos / map  correspondences
+    typedef std::map<int,int>       i2of_t;     ///< indice/offset correspondences
+    typedef std::map<pos_t, i2of_t> pos_i2of_t; ///< pos / map  correspondences
 
     /// Constructor
     info_helper() { update_pos_maps(); }
@@ -64,7 +64,7 @@ namespace wnb
       throw std::runtime_error("Symbol NOT FOUND.");
     }
 
-    //FIXME: use a map
+    //FIXME: use a hardcoded switch
     pos_t get_pos(char c)
     {
       unsigned i = 0;
@@ -83,7 +83,7 @@ namespace wnb
     // i2of_t verb_map;
 
     pos_i2of_t pos_maps;
-    int indice_offset[5];
+    std::size_t indice_offset[5];
   };
 
   /// Create a new info_help based on wordnet data located in dn (../dict/)

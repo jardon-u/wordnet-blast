@@ -56,23 +56,26 @@ namespace wnb
       if (mword == "")
         mword = word;
       light_index.lemma = mword;
-      //std::cout << std::endl << "lemma "<<      light_index.lemma << " ";
+      //std::cout << std::endl << "lemma "<< light_index.lemma << "\n";
 
       // binary_search
       std::pair<vi::iterator,vi::iterator> bounds =
-        std::equal_range(index_list.begin(), index_list.end(),
-                         light_index);
+        std::equal_range(index_list.begin(), index_list.end(), light_index);
 
       vi::iterator it;
       for (it = bounds.first; it != bounds.second; it++)
         for (unsigned i = 0; i < it->synset_offsets.size(); i++)
         {
-          std::cout << "(" << it->synset_offsets[i] << "/" << it->pos << ")" << std::endl;
-          std::cout << "map.size " << info.pos_maps[it->pos].size() << std::endl;
-          std::cout << "indice_offset[pos] " << info.indice_offset[it->pos] << std::endl;
-          std::cout << "map[offset] " << info.pos_maps[it->pos][it->synset_offsets[i]]
-                    << std::endl;
-          int u = info.compute_indice(it->synset_offsets[i], it->pos);
+          int offset = it->synset_offsets[i];
+          pos_t pos = it->pos;
+
+          //std::map<int,int>& map = info.pos_maps[pos];
+          //std::cout << "(" << offset << "/" << pos << ")" << std::endl;
+          //std::cout << info.indice_offset[pos] << " + "
+          //          << map[offset] << std::endl;
+
+          int u = info.compute_indice(offset, pos);
+          //std::cout << u << std::endl;
           synsets.insert(wordnet_graph[u]);
         }
     }
@@ -95,7 +98,7 @@ namespace wnb
     return word;
   }
 
-  bool is_defined(const std::string& word, pos_t pos)
+  bool is_defined(const std::string&, pos_t)
   {
     throw "Not Implemented";
   }
@@ -133,7 +136,6 @@ namespace wnb
     }
 
     // If not in exception list, try applying rules from tables
-    static const int cnts[4] = { 0, 8, 8, 4 };
 
     if (tmpbuf.size() == 0)
       tmpbuf = word;

@@ -205,7 +205,7 @@ namespace wnb
     {
       std::ifstream fin(fn.c_str());
       if (!fin.is_open())
-        throw std::runtime_error("File missing: " + fn);
+        throw std::runtime_error("File Not Found: " + fn);
 
       static const int MAX_LENGTH = 20480;
       char row[MAX_LENGTH];
@@ -223,12 +223,12 @@ namespace wnb
 
 
     void load_wordnet_exc(const std::string& dn, std::string cat,
-                          wordnet& wn, info_helper& info)
+                          wordnet& wn, info_helper&)
     {
       std::string fn = dn + cat + ".exc";
       std::ifstream fin(fn.c_str());
       if (!fin.is_open())
-        throw std::runtime_error("File missing: " + fn);
+        throw std::runtime_error("File Not Found: " + fn);
 
       std::map<std::string,std::string>& exc = wn.exc[get_pos_from_name(cat)];
 
