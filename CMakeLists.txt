@@ -4,20 +4,17 @@ PROJECT( WNB )
 
 LINK_DIRECTORIES(${WNB_SOURCE_DIR}/lib)
 
-IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-	LINK_DIRECTORIES(${LINK_DIRECTORIES} /opt/local/lib)
-	INCLUDE_DIRECTORIES(${INCLUDE_DIRECTORIES} /opt/local/include/)
-ENDIF()
+set(PROJECT_VERSION "0.5")
+set(ARCHIVE_NAME ${CMAKE_PROJECT_NAME}-${PROJECT_VERSION})
+add_custom_target(dist
+    COMMAND git archive --prefix=${ARCHIVE_NAME}/ HEAD
+        | bzip2 > ${CMAKE_BINARY_DIR}/${ARCHIVE_NAME}.tar.bz2
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 ## Compiler flags
 IF (CMAKE_COMPILER_IS_GNUCXX)
   #list(APPEND CMAKE_CXX_FLAGS " -O3 -DNDEBUG -Wall -Wextra")
   list(APPEND CMAKE_CXX_FLAGS " -g -Wall -Wextra")
-  if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    list(APPEND CMAKE_EXE_LINKER_FLAGS "-lWN")
-  else()
-    list(APPEND CMAKE_EXE_LINKER_FLAGS "-lwordnet")
-  endif()
 ENDIF()
 
 ADD_SUBDIRECTORY( src )
