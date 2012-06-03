@@ -232,11 +232,16 @@ namespace wnb
 
       std::map<std::string,std::string>& exc = wn.exc[get_pos_from_name(cat)];
 
-      while (!fin.eof())
+      static const int MAX_LENGTH = 2048;
+      char row[MAX_LENGTH];
+
+      while (fin.getline(row, MAX_LENGTH))
       {
+        std::stringstream srow(row);
         std::string key, value;
-        fin >> key;
-        fin >> value;
+        srow >> key;
+        srow >> value;
+
         exc[key] = value;
       }
     }
