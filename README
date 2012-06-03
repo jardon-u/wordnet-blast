@@ -7,7 +7,6 @@ In memory access to the wordnet onthology.
 
 DEPENDENCIES:
         boost 1.46
-        wordnet 3
 
 INSTALL:
         cmake CMakeLists.txt
