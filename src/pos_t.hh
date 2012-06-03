@@ -5,16 +5,18 @@ namespace wnb
 {
 
   static const std::size_t POS_ARRAY_SIZE = 5;
-  static const char POS_ARRAY[POS_ARRAY_SIZE] = {'a', 'n', 'r', 'v', 's'};
+  static const char POS_ARRAY[POS_ARRAY_SIZE] = {'s', 'n', 'v', 'a', 'r'};
 
-  enum pos_t {
-    A = 0,
-    N,
-    R,
-    V,
-    S,
-    UNKNOWN
-  };
+  enum pos_t
+  	{
+   		S       = 0,
+    	N       = 1,
+    	V       = 2,
+    	A       = 3,
+    	R       = 4,
+    	UNKNOWN	= 5,
+  	};
+
 
   inline pos_t get_pos_from_name(const std::string& pos)
   {

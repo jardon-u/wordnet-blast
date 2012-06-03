@@ -73,11 +73,12 @@ namespace wnb
     // http://wordnet.princeton.edu/wordnet/man/wndb.5WN.html#sect3
     //map.insert(std::pair<'s',????>); //FIXME: What shall we do here ?
 
-    indice_offset[0] = 0; // A
-    indice_offset[1] = pos_maps[A].size(); // N
-    indice_offset[2] = indice_offset[1] + pos_maps[N].size(); // R
-    indice_offset[3] = indice_offset[2] + pos_maps[R].size(); // V
-    indice_offset[4] = indice_offset[3] + pos_maps[V].size(); // S (???)
+    indice_offset[0] = 0; // S
+    indice_offset[1] = pos_maps[S].size(); // N
+    indice_offset[2] = indice_offset[1] + pos_maps[N].size(); // V
+    indice_offset[3] = indice_offset[2] + pos_maps[V].size(); // A
+    indice_offset[4] = indice_offset[3] + pos_maps[A].size(); // R
+
   }
 
   int info_helper::compute_indice(int offset, pos_t pos)
