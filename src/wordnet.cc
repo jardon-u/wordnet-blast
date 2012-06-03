@@ -74,9 +74,12 @@ namespace wnb
           //std::cout << info.indice_offset[pos] << " + "
           //          << map[offset] << std::endl;
 
-          int u = info.compute_indice(offset, pos);
-          //std::cout << u << std::endl;
-          synsets.insert(wordnet_graph[u]);
+          if (pos == (pos_t)p)
+          {
+            int u = info.compute_indice(offset, pos);
+            //std::cout << u << std::endl;
+            synsets.insert(wordnet_graph[u]);
+          }
         }
     }
     //std::cout << std::endl;
@@ -93,7 +96,10 @@ namespace wnb
     if (ext::ends_with(word, info.sufx[ender]))
     {
       int sufxlen = info.sufx[ender].size();
-      return word.substr(0, word.size() - sufxlen);
+      std::string strOut = word.substr(0, word.size() - sufxlen);
+      if (!m_info.addr[ender].empty())
+        strOut += m_info.addr[ender];
+      return strOut;
     }
     return word;
   }
@@ -116,7 +122,7 @@ namespace wnb
     std::string end;
     int cnt = 0;
 
-    if (pos == A)
+    if (pos == R)
       return ""; // Only use exception list for adverbs
 
     if (pos == N)
@@ -150,7 +156,7 @@ namespace wnb
     for  (int i = 0; i < pos_cnt; i++)
     {
       morphed = wordbase(tmpbuf, (i + offset));
-      if (morphed == tmpbuf)// && is_defined(morphed, pos))
+  	  if (morphed != tmpbuf) // && is_defined(morphed, pos))
         return morphed + end;
     }
 
