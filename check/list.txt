@@ -1,0 +1,4 @@
+cat
+lion
+city
+building
