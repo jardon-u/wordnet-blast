@@ -97,8 +97,8 @@ namespace wnb
     {
       int sufxlen = info.sufx[ender].size();
       std::string strOut = word.substr(0, word.size() - sufxlen);
-      if (!m_info.addr[ender].empty())
-        strOut += m_info.addr[ender];
+      if (!info.addr[ender].empty())
+        strOut += info.addr[ender];
       return strOut;
     }
     return word;
