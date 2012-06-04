@@ -2,14 +2,15 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include "wordnet.hh"
-#include "load_wordnet.hh"
-#include "info_helper.hh"
-//#include "path_similarity.hh"
-#include "nltk_similarity.hh"
-#include "std_ext.hh"
 
 #include <boost/progress.hpp>
+
+#include <wnb/core/wordnet.hh>
+#include <wnb/core/load_wordnet.hh>
+#include <wnb/core/info_helper.hh>
+#include <wnb/nltk_similarity.hh>
+#include <wnb/std_ext.hh>
+
 
 using namespace wnb;
 

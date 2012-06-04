@@ -3,7 +3,7 @@
 
 # include <queue>
 # include <boost/graph/filtered_graph.hpp>
-# include "wordnet.hh"
+# include <wnb/core/wordnet.hh>
 
 namespace wnb
 {
@@ -36,7 +36,8 @@ namespace wnb
   class nltk_similarity
   {
 
-    typedef boost::property_map<wordnet::graph, int ptr::*>::type PointerSymbolMap;
+    typedef boost::property_map<wordnet::graph,
+                                int ptr::*>::type PointerSymbolMap;
     typedef boost::filtered_graph<wordnet::graph,
                                   internal::hyper_edge<PointerSymbolMap> > G;
     typedef boost::graph_traits<G>::vertex_descriptor vertex;

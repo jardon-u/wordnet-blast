@@ -1,5 +1,5 @@
-#include "wordnet.hh"
-#include "std_ext.hh"
+#include <wnb/core/wordnet.hh>
+#include <wnb/std_ext.hh>
 
 #include <string>
 #include <set>

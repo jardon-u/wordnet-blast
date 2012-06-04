@@ -13,7 +13,6 @@
 
 # include "load_wordnet.hh"
 # include "pos_t.hh"
-# include "bfs.hh"
 
 namespace wnb
 {
