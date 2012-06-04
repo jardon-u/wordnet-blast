@@ -14,8 +14,8 @@ add_custom_target(dist
 
 ## Compiler flags
 IF (CMAKE_COMPILER_IS_GNUCXX)
-  #list(APPEND CMAKE_CXX_FLAGS " -O3 -DNDEBUG -Wall -Wextra")
-  list(APPEND CMAKE_CXX_FLAGS " -g -Wall -Wextra")
+  list(APPEND CMAKE_CXX_FLAGS " -O3 -DNDEBUG -Wall -Wextra")
+  #list(APPEND CMAKE_CXX_FLAGS " -g -Wall -Wextra")
 ENDIF()
 
 
