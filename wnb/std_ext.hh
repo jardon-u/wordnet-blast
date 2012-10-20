@@ -9,6 +9,18 @@
 
 namespace ext
 {
+
+  void to_lower(std::string& s)
+  {
+    std::transform(s.begin(), s.end(), s.begin(), ::tolower);
+  }
+
+  void to_lower(char * s)
+  {
+    unsigned int len = strlen(s);
+    std::transform(s, s+len, s, ::tolower);
+  }
+
   /// Read a file, return the content as a C++ string
   inline
   std::string read_file(const std::string& fn)
@@ -47,7 +59,7 @@ namespace ext
       return (0 == cmp);
     }
     return false;
-}
+  }
 
 
   /// Sorted unique

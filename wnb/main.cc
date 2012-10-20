@@ -77,8 +77,8 @@ compute_similarities(wordnet& wn,
   return wslist;
 }
 
-void similarity_test(wordnet&     wn,
-                     const std::string& word,
+void similarity_test(wordnet&                  wn,
+                     const std::string&        word,
                      std::vector<std::string>& word_list)
 {
   std::vector<ws> wslist = compute_similarities(wn, word, word_list);

@@ -211,7 +211,7 @@ namespace wnb
       char row[MAX_LENGTH];
 
       //skip header
-      for(unsigned i = 0; i < 29; i++)
+      for (unsigned i = 0; i < 29; i++)
         fin.getline(row, MAX_LENGTH);
 
       //parse data line
