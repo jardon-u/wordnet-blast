@@ -38,7 +38,7 @@ IF (CMAKE_COMPILER_IS_GNUCXX)
   #list(APPEND CMAKE_CXX_FLAGS " -g -Wall -Wextra")
 ENDIF()
 
-SET(wnb_SRCS wnb/core/wordnet.cc
+SET(WNB_SRCS wnb/core/wordnet.cc
   wnb/core/load_wordnet.cc wnb/core/info_helper.cc)
 
 # Executable
@@ -48,7 +48,7 @@ SET(EXECUTABLE_OUTPUT_PATH ${wnb_BINARY_DIR}/bin)
 
 # Static library
 #--------------------------------------------------
-ADD_LIBRARY(wnb ${wnb_SRCS})
+ADD_LIBRARY(wnb ${WNB_SRCS})
 SET(LIBRARY_OUTPUT_PATH ${wnb_BINARY_DIR}/lib)
 
 IF (Boost_FOUND)
