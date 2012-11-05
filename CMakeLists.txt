@@ -22,7 +22,7 @@ LINK_DIRECTORIES(${Boost_LIBRARY_DIR})
 # Project
 #--------------------------------------------------
 
-LINK_DIRECTORIES(${WNB_SOURCE_DIR}/lib)
+LINK_DIRECTORIES(${wnb_SOURCE_DIR}/lib)
 INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR})
 
 SET(PROJECT_VERSION "0.5")
@@ -38,18 +38,18 @@ IF (CMAKE_COMPILER_IS_GNUCXX)
   #list(APPEND CMAKE_CXX_FLAGS " -g -Wall -Wextra")
 ENDIF()
 
-SET(WNB_SRCS wnb/core/wordnet.cc
+SET(wnb_SRCS wnb/core/wordnet.cc
   wnb/core/load_wordnet.cc wnb/core/info_helper.cc)
 
 # Executable
 #--------------------------------------------------
 ADD_EXECUTABLE (wntest wnb/main.cc ${WNB_SRCS})
-SET(EXECUTABLE_OUTPUT_PATH ${WNB_BINARY_DIR}/bin)
+SET(EXECUTABLE_OUTPUT_PATH ${wnb_BINARY_DIR}/bin)
 
 # Static library
 #--------------------------------------------------
-ADD_LIBRARY(wnb ${WNB_SRCS})
-SET(LIBRARY_OUTPUT_PATH ${WNB_BINARY_DIR}/lib)
+ADD_LIBRARY(wnb ${wnb_SRCS})
+SET(LIBRARY_OUTPUT_PATH ${wnb_BINARY_DIR}/lib)
 
 IF (Boost_FOUND)
   TARGET_LINK_LIBRARIES(wntest ${Boost_LIBRARIES})
