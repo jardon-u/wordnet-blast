@@ -34,11 +34,11 @@ namespace wnb
     std::string gloss;
 
     // extra
-    pos_t pos;        ///< pos
-    int id;           ///< unique identifier
+    pos_t pos; ///< pos
+    int id;    ///< unique identifier
 
     bool operator==(const synset& s) const { return (id == s.id);  }
-    bool  operator<(const synset& s) const { return (id < s.id);   }
+    bool operator<(const synset& s) const { return (id < s.id);   }
   };
 
 
@@ -89,7 +89,7 @@ namespace wnb
     std::vector<synset> get_synsets(const std::string& word);
 
     //FIXME: todo
-    std::vector<synset> get_synsets(const std::string& word, char pos);
+    std::vector<synset> get_synsets(const std::string& word, pos_t pos);
 
     //FIXME: todo
     std::vector<synset> get_synset(const std::string& word, char pos, int i);

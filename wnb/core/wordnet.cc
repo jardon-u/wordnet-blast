@@ -40,54 +40,53 @@ namespace wnb
   wordnet::get_synsets(const std::string& word)
   {
     typedef std::vector<index> vi;
-    std::set<synset> synsets;
+    std::vector<synset> synsets;
 
     index light_index;
     light_index.lemma = word;
 
-    //last pos is S and must not be given to morphword.
     static const unsigned nb_pos = POS_ARRAY_SIZE-1;
     for (unsigned p = 1; p <= nb_pos; p++)
     {
-      //morphword Time consuming compare to path_similarity (x6)
-      std::string mword = morphword(word, (pos_t)p);
-      if (mword == "" && p != nb_pos)
-        continue;
-      if (mword == "")
-        mword = word;
-      light_index.lemma = mword;
-      //std::cout << std::endl << "lemma "<< light_index.lemma << "\n";
-
-      // binary_search
-      std::pair<vi::iterator,vi::iterator> bounds =
-        std::equal_range(index_list.begin(), index_list.end(), light_index);
-
-      vi::iterator it;
-      for (it = bounds.first; it != bounds.second; it++)
-        for (unsigned i = 0; i < it->synset_offsets.size(); i++)
-        {
-          int offset = it->synset_offsets[i];
-          pos_t pos = it->pos;
-
-          //std::map<int,int>& map = info.pos_maps[pos];
-          //std::cout << "(" << offset << "/" << pos << ")" << std::endl;
-          //std::cout << info.indice_offset[pos] << " + "
-          //          << map[offset] << std::endl;
-
-          if (pos == (pos_t)p)
-          {
-            int u = info.compute_indice(offset, pos);
-            //std::cout << u << std::endl;
-            synsets.insert(wordnet_graph[u]);
-          }
-        }
+      std::vector<synset> res = get_synsets(word, (pos_t)p);
+      synsets.insert(synsets.end(), res.begin(), res.end());
     }
-    //std::cout << std::endl;
 
-    //FIXME: get rid of this or return a set.
-    std::vector<synset> synsetv(synsets.size());
-    copy(synsets.begin(), synsets.end(), synsetv.begin());
-    return synsetv;
+    return synsets;
+  }
+
+  std::vector<synset>
+  wordnet::get_synsets(const std::string& word, pos_t pos)
+  {
+    std::vector<synset> synsets;
+
+    // morphing
+    std::string mword = morphword(word, pos);
+    if (mword == "")
+      return synsets;
+
+    // binary_search
+    index light_index;
+    light_index.lemma = mword; //(mword != "") ? mword : word;
+    typedef std::vector<index> vi;
+    std::pair<vi::iterator,vi::iterator> bounds =
+      std::equal_range(index_list.begin(), index_list.end(), light_index);
+
+    vi::iterator it;
+    for (it = bounds.first; it != bounds.second; it++)
+    {
+      for (unsigned i = 0; i < it->synset_offsets.size(); i++)
+      {
+        int offset = it->synset_offsets[i];
+        if (it->pos == pos) // FIXME: one index_list by pos ?
+        {
+          int u = info.compute_indice(offset, it->pos);
+          synsets.push_back(wordnet_graph[u]);
+        }
+      }
+    }
+
+    return synsets;
   }
 
   std::string
