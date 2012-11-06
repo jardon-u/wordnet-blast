@@ -1,4 +1,7 @@
 cat
-lion
+lions
 city
 building
+salvation
+medications
+haven

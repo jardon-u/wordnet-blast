@@ -4,6 +4,8 @@
 #include <sstream>
 
 #include <boost/progress.hpp>
+#include <boost/algorithm/string.hpp>
+
 
 #include <wnb/core/wordnet.hh>
 #include <wnb/core/load_wordnet.hh>
@@ -19,9 +21,9 @@ bool usage(int argc, char ** argv)
   std::string dir;
   if (argc >= 2)
     dir = std::string(argv[1]);
-  if (argc != 3 || dir[dir.length()-1] != '/')
+  if (argc != 2 || dir[dir.length()-1] != '/')
   {
-    std::cout << argv[0] << " .../wordnet_dir/ word" << std::endl;
+    std::cout << argv[0] << " .../wordnet_dir/" << std::endl;
     return true;
   }
   return false;
@@ -88,24 +90,37 @@ void similarity_test(wordnet&     wn,
     std::cout << wslist[i].w << " " << wslist[i].s << std::endl;
 }
 
-void batch_test(wordnet& wn,
-                std::vector<std::string>& word_list)
+
+void wn_like(wordnet& wn, std::string& word)
+{
+  static const unsigned nb_pos = POS_ARRAY_SIZE-1;
+  for (unsigned p = 1; p <= nb_pos; p++)
+  {
+    std::vector<synset> synsets = wn.get_synsets(word, (pos_t)p);
+    if (synsets.size() == 0)
+      continue;
+    std::cout << "Overview of " << get_name_from_pos((pos_t)p)
+              << " " << word << "\n\n";
+    std::cout << "The " << get_name_from_pos((pos_t)p)
+              << " " << word << " has " << synsets.size() << " senses\n\n";
+    for (std::size_t j = 0; j < synsets.size(); j++)
+    {
+      std::cout << j+1 << ". ";// pos " << (int)synsets[j].pos << "| ";
+      std::cout << synsets[j].words[0];
+      for (std::size_t k = 1; k < synsets[j].words.size(); k++)
+        std::cout << ", " << synsets[j].words[k];
+      boost::algorithm::trim(synsets[j].gloss);
+      std::cout << " -- (" << synsets[j].gloss << ")";
+      std::cout << std::endl;
+    }
+  }
+}
+
+void batch_test(wordnet& wn, std::vector<std::string>& word_list)
 {
   for (std::size_t i = 0; i < word_list.size(); i++)
   {
-    std::string& word = word_list[i];
-    std::cout << "=== " << word << " === \n";
-
-    std::vector<synset> synsets = wn.get_synsets(word);
-    std::cout << synsets.size() << "\n";
-    for (std::size_t j = 0; j < synsets.size(); j++)
-    {
-      std::cout << "  pos " << (int)synsets[j].pos << "| ";
-      for (std::size_t k = 0; k < synsets[j].words.size(); k++)
-        std::cout <<  synsets[j].words[k] << ", ";
-    std::cout << std::endl;
-    }
-    std::cout << std::endl;
+    wn_like(wn, word_list[i]);
   }
 }
 
@@ -116,12 +131,12 @@ int main(int argc, char ** argv)
 
   // read command line
   std::string wordnet_dir = argv[1];
-  std::string word        = argv[2];
+  //std::string word        = argv[2];
 
   wordnet wn(wordnet_dir);
 
   // read test file
-  std::string list = ext::read_file("../check/list.txt");
+  std::string list = ext::read_file("../check/test");
   std::vector<std::string> wl        =  ext::split(list);
   std::vector<std::string> word_list =  ext::s_unique(wl);
 

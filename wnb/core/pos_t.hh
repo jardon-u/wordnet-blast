@@ -31,6 +31,18 @@ namespace wnb
     return UNKNOWN;
   }
 
+  inline std::string get_name_from_pos(const pos_t& pos)
+  {
+    switch (pos)
+    {
+    case A: return "adj";
+    case N: return "noun";
+    case R: return "adv";
+    case V: return "verb";
+    default: return "UNKNOWN";
+    }
+  }
+
 } // end of namespace wncpp
 
 

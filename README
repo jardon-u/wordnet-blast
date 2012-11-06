@@ -20,13 +20,13 @@ USAGE:
 
         int main()
         {
-                wordnet wn(PATH_TO_WORDNET);
+            wordnet wn(PATH_TO_WORDNET);
 
-                vector<synset> synsets1 = wn.get_synsets("cat");
-                vector<synset> synsets2 = wn.get_synsets("dog");
+            vector<synset> synsets1 = wn.get_synsets("cat");
+            vector<synset> synsets2 = wn.get_synsets("dog");
 
-                nltk_similarity similarity(wn);
-                float d = similarity(synsets1[0], synsets2[0], 6);
+            nltk_similarity similarity(wn);
+            float d = similarity(synsets1[0], synsets2[0], 6);
         }
 
 BUGS:
