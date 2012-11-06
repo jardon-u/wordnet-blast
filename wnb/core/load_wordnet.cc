@@ -8,6 +8,7 @@
 
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/progress.hpp>
+#include <boost/algorithm/string.hpp>
 
 #include "wordnet.hh"
 #include "info_helper.hh"
@@ -134,12 +135,8 @@ namespace wnb
         if (tmp == "|")
           break;
 
-      //gloss (could be nicer)
-      while (srow >> tmp)
-      {
-        synset.gloss.append(tmp);
-        synset.gloss.append(" ");
-      }
+      // gloss
+      std::getline(srow, synset.gloss);
 
       // Add synset to graph
       wn.wordnet_graph[synset.id] = synset;
@@ -235,10 +232,10 @@ namespace wnb
       static const int MAX_LENGTH = 2048;
       char row[MAX_LENGTH];
 
+      std::string key, value;
       while (fin.getline(row, MAX_LENGTH))
       {
         std::stringstream srow(row);
-        std::string key, value;
         srow >> key;
         srow >> value;
 
