@@ -10,6 +10,8 @@
 #include <boost/progress.hpp>
 #include <boost/algorithm/string.hpp>
 
+#include <wnb/std_ext.hh>
+
 #include "wordnet.hh"
 #include "info_helper.hh"
 #include "pos_t.hh"
@@ -229,11 +231,10 @@ namespace wnb
 
       std::map<std::string,std::string>& exc = wn.exc[get_pos_from_name(cat)];
 
-      static const int MAX_LENGTH = 2048;
-      char row[MAX_LENGTH];
+      std::string row;
 
       std::string key, value;
-      while (fin.getline(row, MAX_LENGTH))
+      while (std::getline(fin, row))
       {
         std::stringstream srow(row);
         srow >> key;
@@ -251,6 +252,37 @@ namespace wnb
       load_wordnet_exc(dn, cat, wn, info);
     }
 
+    // FIXME: this file is not found in any packaged version of wordnet
+    void load_wordnet_index_sense(const std::string& dn, wordnet& wn, info_helper& info)
+    {
+      std::string fn = dn + "index.sense";
+      std::ifstream fin(fn.c_str());
+      if (!fin.is_open())
+        throw std::runtime_error("File Not Found: " + fn);
+
+      std::string row;
+      std::string sense_key;
+      int synset_offset;
+      while (std::getline(fin, row))
+      {
+        std::stringstream srow(row);
+        srow >> sense_key;
+
+        // Get the pos of the lemma
+        std::stringstream tmp(ext::split(ext::split(sense_key,'%').at(1), ':').at(0));
+        int ss_type;
+        tmp >> ss_type;
+        pos_t pos = (pos_t) ss_type;
+
+        srow >> synset_offset;
+
+        // Update synset info
+        int u = info.compute_indice(synset_offset, pos);
+        srow >> wn.wordnet_graph[u].sense_number;
+        srow >> wn.wordnet_graph[u].tag_cnt;
+      }
+    }
+
   } // end of anonymous namespace
 
   void load_wordnet(const std::string& dn, wordnet& wn, info_helper& info)
@@ -261,7 +293,7 @@ namespace wnb
 
     std::cout << std::endl;
     std::cout << "### Loading Wordnet 3.0";
-    boost::progress_display show_progress(4);
+    boost::progress_display show_progress(5);
     boost::progress_timer t;
 
     load_wordnet_cat(dn, "adj", wn, info);
@@ -271,6 +303,8 @@ namespace wnb
     load_wordnet_cat(dn, "adv", wn, info);
     ++show_progress;
     load_wordnet_cat(dn, "verb", wn, info);
+    ++show_progress;
+    load_wordnet_index_sense(dn, wn, info);
     ++show_progress;
     std::cout << std::endl;
 

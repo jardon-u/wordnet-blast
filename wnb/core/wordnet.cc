@@ -26,13 +26,6 @@ namespace wnb
 
     //FIXME: this check is only valid for Wordnet 3.0
     assert(info.nb_synsets() == 117659);
-
-    // FIXME: Provide our path (via env var) ?
-    // FIXME: rewrite this. not thread safe and slow
-    //if(wninit())
-    //  throw std::runtime_error("C wordnet lib initialization failed");
-    //if (morphinit())
-    //  throw std::runtime_error("C wordnet lib initialization failed");
   }
 
 

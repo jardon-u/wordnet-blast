@@ -72,7 +72,7 @@ namespace wnb
       for (i = 0;  i < POS_ARRAY_SIZE; i++)
         if (c == POS_ARRAY[i])
           return pos_t(i);
-      throw std::runtime_error("pos NOT FOUND.");
+      throw std::runtime_error(std::string("pos ") + c + " NOT FOUND.");
     }
 
   public:
@@ -82,7 +82,7 @@ namespace wnb
     // i2of_t noun_map;
     // i2of_t verb_map;
 
-    pos_i2of_t pos_maps;
+    pos_i2of_t  pos_maps;
     std::size_t indice_offset[5];
   };
 

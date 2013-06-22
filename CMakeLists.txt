@@ -17,7 +17,7 @@ MESSAGE(STATUS "** Boost Libraries: ${Boost_LIBRARY_DIRS}")
 MESSAGE(STATUS "** Boost Libraries: ${Boost_LIBRARIES}")
 
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
-LINK_DIRECTORIES(${Boost_LIBRARY_DIR})
+LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
 
 # Project
 #--------------------------------------------------

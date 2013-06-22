@@ -34,8 +34,10 @@ namespace wnb
     std::string gloss;
 
     // extra
-    pos_t pos; ///< pos
-    int id;    ///< unique identifier
+    pos_t pos;        ///< pos
+    int id;           ///< unique identifier
+    int sense_number; ///< http://wordnet.princeton.edu/man/senseidx.5WN.html
+    int tag_cnt;      ///< http://wordnet.princeton.edu/man/senseidx.5WN.html
 
     bool operator==(const synset& s) const { return (id == s.id);  }
     bool operator<(const synset& s) const { return (id < s.id);   }
@@ -98,9 +100,10 @@ namespace wnb
 
     std::string morphword(const std::string& word, pos_t pos);
 
-    std::vector<index> index_list;    ///< index list
+    std::vector<index> index_list;    ///< index list // FIXME: use a map
     graph              wordnet_graph; ///< synsets graph
     info_helper        info;          ///< helper object
+    std::map<std::pair<std::string,int>,int>        cntlist;
 
     typedef std::map<std::string,std::string> exc_t;
     std::map<pos_t, exc_t> exc;

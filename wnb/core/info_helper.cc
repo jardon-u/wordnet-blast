@@ -102,16 +102,15 @@ namespace wnb
     if (!file.is_open())
       throw std::runtime_error("preprocess_data: File not found: " + fn);
 
-    static const int MAX_LENGTH = 20480; // must be that large
-    char row[MAX_LENGTH];
+    std::string row;
 
     //skip header
     for(unsigned i = 0; i < 29; i++)
-      file.getline(row, MAX_LENGTH);
+      std::getline(file, row);
 
     std::size_t ind = 0;
     //parse data line
-    while (file.getline(row, MAX_LENGTH))
+    while (std::getline(file, row))
     {
       std::stringstream srow(row);
       int offset;

@@ -6,13 +6,11 @@
 #include <boost/progress.hpp>
 #include <boost/algorithm/string.hpp>
 
-
 #include <wnb/core/wordnet.hh>
 #include <wnb/core/load_wordnet.hh>
 #include <wnb/core/info_helper.hh>
 #include <wnb/nltk_similarity.hh>
 #include <wnb/std_ext.hh>
-
 
 using namespace wnb;
 
@@ -79,8 +77,8 @@ compute_similarities(wordnet& wn,
   return wslist;
 }
 
-void similarity_test(wordnet&     wn,
-                     const std::string& word,
+void similarity_test(wordnet&                  wn,
+                     const std::string&        word,
                      std::vector<std::string>& word_list)
 {
   std::vector<ws> wslist = compute_similarities(wn, word, word_list);
@@ -99,13 +97,31 @@ void wn_like(wordnet& wn, std::string& word)
     std::vector<synset> synsets = wn.get_synsets(word, (pos_t)p);
     if (synsets.size() == 0)
       continue;
-    std::cout << "Overview of " << get_name_from_pos((pos_t)p)
+
+    std::cout << "Overview of "
+              << get_name_from_pos((pos_t)p)
               << " " << word << "\n\n";
-    std::cout << "The " << get_name_from_pos((pos_t)p)
-              << " " << word << " has " << synsets.size() << " senses\n\n";
+
+    std::cout << "The "
+              << get_name_from_pos((pos_t)p)
+              << " " << word << " has "
+              << synsets.size()
+              << " senses";
+
+    int tagsense_cnt = 0; // FIXME: already in index_list
+    for (std::size_t j = 0; j < synsets.size(); j++)
+      tagsense_cnt += (synsets[j].tag_cnt != 0);
+
+    if (tagsense_cnt != 0)
+      std::cout << " (first " << tagsense_cnt << " from tagged texts)";
+
+    std::cout << "\n\n";
+
     for (std::size_t j = 0; j < synsets.size(); j++)
     {
-      std::cout << j+1 << ". ";// pos " << (int)synsets[j].pos << "| ";
+      std::cout << j+1 << ". "; // << (int)synsets[j].pos << "| ";
+      if (synsets[j].tag_cnt != 0)
+        std::cout << "(" << synsets[j].tag_cnt << ") ";
       std::cout << synsets[j].words[0];
       for (std::size_t k = 1; k < synsets[j].words.size(); k++)
         std::cout << ", " << synsets[j].words[k];
@@ -136,7 +152,7 @@ int main(int argc, char ** argv)
   wordnet wn(wordnet_dir);
 
   // read test file
-  std::string list = ext::read_file("../check/test");
+  std::string list = ext::read_file("./check/test");
   std::vector<std::string> wl        =  ext::split(list);
   std::vector<std::string> word_list =  ext::s_unique(wl);
 
