@@ -12,20 +12,27 @@ namespace wnb
 {
 
   //FIXME: Make (smart) use of fs::path
-  wordnet::wordnet(const std::string& wordnet_dir)
+  wordnet::wordnet(const std::string& wordnet_dir, bool verbose)
+    : _verbose(verbose)
   {
     wordnet& wn = *this;
-    //std::string wordnet_dir = wordnet_path.file_string();
-    //std::cout <<  wordnet_dir << std::endl;
+
+    if (_verbose)
+    {
+      std::cout << wordnet_dir << std::endl;
+    }
 
     info = preprocess_wordnet(wordnet_dir);
-    info.update_pos_maps();
 
     wordnet_graph = graph(info.nb_synsets());
     load_wordnet(wordnet_dir, wn, info);
 
+    if (_verbose)
+    {
+      std::cout << "nb_synsets: " << info.nb_synsets() << std::endl;
+    }
     //FIXME: this check is only valid for Wordnet 3.0
-    assert(info.nb_synsets() == 117659);
+    assert(info.nb_synsets() == 142335);//117659);
   }
 
 

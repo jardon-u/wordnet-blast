@@ -291,22 +291,33 @@ namespace wnb
 
     std::string fn = dn;
 
-    std::cout << std::endl;
-    std::cout << "### Loading Wordnet 3.0";
-    boost::progress_display show_progress(5);
-    boost::progress_timer t;
+    if (wn._verbose)
+    {
+      std::cout << std::endl;
+      std::cout << "### Loading Wordnet 3.0";
+      boost::progress_display show_progress(5);
+      boost::progress_timer t;
 
-    load_wordnet_cat(dn, "adj", wn, info);
-    ++show_progress;
-    load_wordnet_cat(dn, "noun", wn, info);
-    ++show_progress;
-    load_wordnet_cat(dn, "adv", wn, info);
-    ++show_progress;
-    load_wordnet_cat(dn, "verb", wn, info);
-    ++show_progress;
-    load_wordnet_index_sense(dn, wn, info);
-    ++show_progress;
-    std::cout << std::endl;
+      load_wordnet_cat(dn, "adj", wn, info);
+      ++show_progress;
+      load_wordnet_cat(dn, "noun", wn, info);
+      ++show_progress;
+      load_wordnet_cat(dn, "adv", wn, info);
+      ++show_progress;
+      load_wordnet_cat(dn, "verb", wn, info);
+      ++show_progress;
+      load_wordnet_index_sense(dn, wn, info);
+      ++show_progress;
+      std::cout << std::endl;
+    }
+    else
+    {
+      load_wordnet_cat(dn, "adj", wn, info);
+      load_wordnet_cat(dn, "noun", wn, info);
+      load_wordnet_cat(dn, "adv", wn, info);
+      load_wordnet_cat(dn, "verb", wn, info);
+      load_wordnet_index_sense(dn, wn, info);
+    }
 
     std::stable_sort(wn.index_list.begin(), wn.index_list.end());
   }

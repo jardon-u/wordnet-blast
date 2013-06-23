@@ -5,6 +5,8 @@
 #include <sstream>
 #include <map>
 
+#include <cassert>
+
 namespace wnb
 {
 
@@ -73,11 +75,13 @@ namespace wnb
     // http://wordnet.princeton.edu/wordnet/man/wndb.5WN.html#sect3
     //map.insert(std::pair<'s',????>); //FIXME: What shall we do here ?
 
-    indice_offset[0] = 0; // S
-    indice_offset[1] = pos_maps[S].size(); // N
+    indice_offset[0] = 0; // dummy
+
+    indice_offset[1] = 0; // N
     indice_offset[2] = indice_offset[1] + pos_maps[N].size(); // V
     indice_offset[3] = indice_offset[2] + pos_maps[V].size(); // A
     indice_offset[4] = indice_offset[3] + pos_maps[A].size(); // R
+    indice_offset[5] = indice_offset[4] + pos_maps[S].size(); // S
 
   }
 
@@ -86,6 +90,8 @@ namespace wnb
     if (pos == S)
       pos = A;
     std::map<int,int>& map = pos_maps[pos];
+
+    assert(pos <= 5 && pos > 0);
 
     return indice_offset[pos] + map[offset];
   }
@@ -115,7 +121,7 @@ namespace wnb
       std::stringstream srow(row);
       int offset;
       srow >> offset;
-      map.insert(std::pair<int,int>(offset,ind));
+      map.insert(std::pair<int,int>(offset, ind));
       ind++;
     }
 
@@ -128,10 +134,10 @@ namespace wnb
   {
     info_helper info;
 
-    info.pos_maps[A] = preprocess_data((dn + "data.adj"));  // adj_map
-    info.pos_maps[R] = preprocess_data((dn + "data.adv"));  // adv_map
     info.pos_maps[N] = preprocess_data((dn + "data.noun")); // noun_map
     info.pos_maps[V] = preprocess_data((dn + "data.verb")); // verb_map
+    info.pos_maps[A] = preprocess_data((dn + "data.adj"));  // adj_map
+    info.pos_maps[R] = preprocess_data((dn + "data.adv"));  // adv_map
 
     info.update_pos_maps();
 

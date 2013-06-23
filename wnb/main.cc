@@ -19,9 +19,9 @@ bool usage(int argc, char ** argv)
   std::string dir;
   if (argc >= 2)
     dir = std::string(argv[1]);
-  if (argc != 2 || dir[dir.length()-1] != '/')
+  if (argc != 3 || dir[dir.length()-1] != '/')
   {
-    std::cout << argv[0] << " .../wordnet_dir/" << std::endl;
+    std::cout << argv[0] << " .../wordnet_dir/ word_list_file" << std::endl;
     return true;
   }
   return false;
@@ -98,13 +98,16 @@ void wn_like(wordnet& wn, std::string& word)
     if (synsets.size() == 0)
       continue;
 
-    std::cout << "Overview of "
+    std::string mword = wn.morphword(word, (pos_t)p);
+    std::cerr << word << " " << mword << std::endl;
+
+    std::cout << "\nOverview of "
               << get_name_from_pos((pos_t)p)
-              << " " << word << "\n\n";
+              << " " << mword << "\n\n";
 
     std::cout << "The "
               << get_name_from_pos((pos_t)p)
-              << " " << word << " has "
+              << " " << mword << " has "
               << synsets.size()
               << " senses";
 
@@ -115,7 +118,8 @@ void wn_like(wordnet& wn, std::string& word)
     if (tagsense_cnt != 0)
       std::cout << " (first " << tagsense_cnt << " from tagged texts)";
 
-    std::cout << "\n\n";
+    std::cout << "\n";
+    std::cout << "                                      \n";
 
     for (std::size_t j = 0; j < synsets.size(); j++)
     {
@@ -147,16 +151,14 @@ int main(int argc, char ** argv)
 
   // read command line
   std::string wordnet_dir = argv[1];
-  //std::string word        = argv[2];
+  std::string test_file   = argv[2];
 
   wordnet wn(wordnet_dir);
 
   // read test file
-  std::string list = ext::read_file("./check/test");
+  std::string list = ext::read_file(test_file);
   std::vector<std::string> wl        =  ext::split(list);
-  std::vector<std::string> word_list =  ext::s_unique(wl);
 
-  //similarity_test(wn, word, word_list);
-  batch_test(wn, word_list);
+  batch_test(wn, wl);
 }
 

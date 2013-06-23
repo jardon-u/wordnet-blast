@@ -85,12 +85,11 @@ namespace wnb
                                   synset, ptr> graph; ///< boost graph type
 
     /// Constructor
-    wordnet(const std::string& wordnet_dir);
+    wordnet(const std::string& wordnet_dir, bool verbose=false);
 
     /// Return synsets matching word
     std::vector<synset> get_synsets(const std::string& word);
 
-    //FIXME: todo
     std::vector<synset> get_synsets(const std::string& word, pos_t pos);
 
     //FIXME: todo
@@ -103,7 +102,7 @@ namespace wnb
     std::vector<index> index_list;    ///< index list // FIXME: use a map
     graph              wordnet_graph; ///< synsets graph
     info_helper        info;          ///< helper object
-    std::map<std::pair<std::string,int>,int>        cntlist;
+    bool               _verbose;
 
     typedef std::map<std::string,std::string> exc_t;
     std::map<pos_t, exc_t> exc;
