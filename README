@@ -7,10 +7,14 @@ In memory access to the wordnet onthology.
 
 DEPENDENCIES:
         boost 1.46
+        wordnet-sense-index
 
 INSTALL:
         cmake CMakeLists.txt
         make
+
+TESTS: (Beta)
+        make check
 
 USAGE:
         #include "wordnet.hh"
