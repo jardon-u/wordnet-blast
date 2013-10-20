@@ -88,6 +88,13 @@ void similarity_test(wordnet&                  wn,
     std::cout << wslist[i].w << " " << wslist[i].s << std::endl;
 }
 
+std::string& replace(std::string& s, char a, char b)
+{
+  for (std::size_t i = 0; i < s.size(); i++)
+    if (s[i] == a)
+      s[i] = b;
+  return s;
+}
 
 void wn_like(wordnet& wn, std::string& word)
 {
@@ -113,10 +120,16 @@ void wn_like(wordnet& wn, std::string& word)
 
     int tagsense_cnt = 0; // FIXME: already in index_list
     for (std::size_t j = 0; j < synsets.size(); j++)
-      tagsense_cnt += (synsets[j].tag_cnt != 0);
+    {
+      for (std::size_t k = 0; k < synsets[j].tag_cnts.size(); k++)
+        if (synsets[j].tag_cnts[k].first == mword)
+          tagsense_cnt += (synsets[j].tag_cnts[k].second != 0);
+    }
 
     if (tagsense_cnt != 0)
       std::cout << " (first " << tagsense_cnt << " from tagged texts)";
+    else
+      std::cout << " (no senses from tagged texts)";
 
     std::cout << "\n";
     std::cout << "                                      \n";
@@ -124,11 +137,13 @@ void wn_like(wordnet& wn, std::string& word)
     for (std::size_t j = 0; j < synsets.size(); j++)
     {
       std::cout << j+1 << ". "; // << (int)synsets[j].pos << "| ";
-      if (synsets[j].tag_cnt != 0)
-        std::cout << "(" << synsets[j].tag_cnt << ") ";
-      std::cout << synsets[j].words[0];
+
+      for (std::size_t k = 0; k < synsets[j].tag_cnts.size(); k++)
+        if (synsets[j].tag_cnts[k].first == mword)
+          std::cout << "(" << synsets[j].tag_cnts[k].second << ") ";
+      std::cout << replace (synsets[j].words[0], '_', ' ');
       for (std::size_t k = 1; k < synsets[j].words.size(); k++)
-        std::cout << ", " << synsets[j].words[k];
+        std::cout << ", " << replace (synsets[j].words[k], '_', ' ');
       boost::algorithm::trim(synsets[j].gloss);
       std::cout << " -- (" << synsets[j].gloss << ")";
       std::cout << std::endl;

@@ -5,6 +5,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <algorithm>
+#include <utility>
 
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/progress.hpp>
@@ -140,6 +141,9 @@ namespace wnb
       // gloss
       std::getline(srow, synset.gloss);
 
+      // extra
+      synset.sense_number = 0;
+
       // Add synset to graph
       wn.wordnet_graph[synset.id] = synset;
     }
@@ -170,7 +174,7 @@ namespace wnb
     //FIXME: It seems possible to replace synset_offsets with indice here.
     void load_index_row(const std::string& row, wordnet& wn, info_helper& info)
     {
-      // lemma  pos  synset_cnt  p_cnt  [ptr_symbol...]  sense_cnt  tagsense_cnt   synset_offset  [synset_offset...]
+      // lemma pos synset_cnt p_cnt [ptr_symbol...] sense_cnt tagsense_cnt synset_offset [synset_offset...]
       index index;
       std::stringstream srow(row);
 
@@ -269,6 +273,7 @@ namespace wnb
         srow >> sense_key;
 
         // Get the pos of the lemma
+        std::string word = ext::split(sense_key,'%').at(0);
         std::stringstream tmp(ext::split(ext::split(sense_key,'%').at(1), ':').at(0));
         int ss_type;
         tmp >> ss_type;
@@ -278,8 +283,13 @@ namespace wnb
 
         // Update synset info
         int u = info.compute_indice(synset_offset, pos);
-        srow >> wn.wordnet_graph[u].sense_number;
-        srow >> wn.wordnet_graph[u].tag_cnt;
+        int sense_number;
+        srow >> sense_number;
+        wn.wordnet_graph[u].sense_number += sense_number;
+        int tag_cnt;
+        srow >> tag_cnt;
+        if (tag_cnt != 0)
+          wn.wordnet_graph[u].tag_cnts.push_back(make_pair(word,tag_cnt));
       }
     }
 

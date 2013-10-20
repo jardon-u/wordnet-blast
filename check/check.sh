@@ -9,7 +9,7 @@ check() {
     echo "for i in \`cat ${word_list}\`; do wn $i -over; done"
     time for i in `cat ${word_list}`; do wn $i -over; done > ${word_list}.wn
 
-    diff ${word_list}.wn ${word_list}.blast
+    diff ${word_list}.wn ${word_list}.blast -b
 }
 
 check ./check/list.txt
