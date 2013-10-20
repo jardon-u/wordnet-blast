@@ -111,20 +111,19 @@ namespace wnb
     void load_data_row(const std::string& row, wordnet& wn, info_helper& info)
     {
       //http://wordnet.princeton.edu/wordnet/man/wndb.5WN.html#sect3
-      // synset_offset  lex_filenum  ss_type  w_cnt  word  lex_id  [word  lex_id...]  p_cnt  [ptr...]  [frames...]  |   gloss
+      // synset_offset lex_filenum ss_type w_cnt word lex_id [word lex_id...] p_cnt [ptr...] [frames...] | gloss
       synset synset;
 
       std::stringstream srow(row);
-      srow >> synset.synset_offset_;
+      int synset_offset;
+      srow >> synset_offset;
       srow >> synset.lex_filenum;
-      srow >> synset.ss_type_;
+      char ss_type;
+      srow >> ss_type;
 
       // extra information
-      synset.pos = info.get_pos(synset.ss_type_);
-
-      //if (synset.pos == S)  return; //FIXME: Check where are s synsets
-
-      synset.id  = info.compute_indice(synset.synset_offset_, synset.pos);
+      synset.pos = info.get_pos(ss_type);
+      synset.id  = info.compute_indice(synset_offset, synset.pos);
 
       // words
       load_data_row_words(srow, synset);
@@ -178,8 +177,10 @@ namespace wnb
       index index;
       std::stringstream srow(row);
 
+      char pos;
       srow >> index.lemma;
-      srow >> index.pos_;
+      srow >> pos;
+      index.pos = info.get_pos(pos); // extra data
       srow >> index.synset_cnt;
       srow >> index.p_cnt;
 
@@ -194,10 +195,10 @@ namespace wnb
 
       int tmp_o;
       while (srow >> tmp_o)
+      {
         index.synset_offsets.push_back(tmp_o);
-
-      //extra data
-      index.pos = info.get_pos(index.pos_);
+        index.synset_ids.push_back(info.compute_indice(tmp_o, index.pos)); // extra data
+      }
 
       //add synset to index list
       wn.index_list.push_back(index);
@@ -277,7 +278,7 @@ namespace wnb
         std::stringstream tmp(ext::split(ext::split(sense_key,'%').at(1), ':').at(0));
         int ss_type;
         tmp >> ss_type;
-        pos_t pos = (pos_t) ss_type;
+        pos_t pos =  (pos_t) ss_type;
 
         srow >> synset_offset;
 
@@ -290,6 +291,10 @@ namespace wnb
         srow >> tag_cnt;
         if (tag_cnt != 0)
           wn.wordnet_graph[u].tag_cnts.push_back(make_pair(word,tag_cnt));
+
+        //if (synset_offset == 2121620)
+        //  std::cout << u << " " << word << " " << synset_offset << " " <<  wn.wordnet_graph[u].tag_cnt << " "
+        //            <<  wn.wordnet_graph[u].words[0] << std::endl;
       }
     }
 

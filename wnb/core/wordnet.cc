@@ -15,8 +15,6 @@ namespace wnb
   wordnet::wordnet(const std::string& wordnet_dir, bool verbose)
     : _verbose(verbose)
   {
-    wordnet& wn = *this;
-
     if (_verbose)
     {
       std::cout << wordnet_dir << std::endl;
@@ -25,7 +23,7 @@ namespace wnb
     info = preprocess_wordnet(wordnet_dir);
 
     wordnet_graph = graph(info.nb_synsets());
-    load_wordnet(wordnet_dir, wn, info);
+    load_wordnet(wordnet_dir, *this, info);
 
     if (_verbose)
     {
@@ -33,26 +31,6 @@ namespace wnb
     }
     //FIXME: this check is only valid for Wordnet 3.0
     assert(info.nb_synsets() == 142335);//117659);
-  }
-
-
-  std::vector<synset>
-  wordnet::get_synsets(const std::string& word)
-  {
-    typedef std::vector<index> vi;
-    std::vector<synset> synsets;
-
-    index light_index;
-    light_index.lemma = word;
-
-    static const unsigned nb_pos = POS_ARRAY_SIZE-1;
-    for (unsigned p = 1; p <= nb_pos; p++)
-    {
-      std::vector<synset> res = get_synsets(word, (pos_t)p);
-      synsets.insert(synsets.end(), res.begin(), res.end());
-    }
-
-    return synsets;
   }
 
   std::vector<synset>
@@ -75,13 +53,14 @@ namespace wnb
     vi::iterator it;
     for (it = bounds.first; it != bounds.second; it++)
     {
-      for (unsigned i = 0; i < it->synset_offsets.size(); i++)
+      if (pos != -1 && it->pos == pos)
       {
-        int offset = it->synset_offsets[i];
-        if (it->pos == pos) // FIXME: one index_list by pos ?
+        for (unsigned i = 0; i < it->synset_ids.size(); i++)
         {
-          int u = info.compute_indice(offset, it->pos);
-          synsets.push_back(wordnet_graph[u]);
+          int id = it->synset_ids[i];
+          //std::cout << "get_synsets " << wordnet_graph[id].words.at(0) << " "
+          //          << id << " " << wordnet_graph[id].tag_cnt << std::endl;
+          synsets.push_back(wordnet_graph[id]);
         }
       }
     }

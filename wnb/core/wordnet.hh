@@ -24,9 +24,7 @@ namespace wnb
   /// Synset
   struct synset
   {
-    int  synset_offset_;  ///< ***Deprecated*** @deprecated in-file wordnet
     int  lex_filenum;
-    char ss_type_;       ///< ***Deprecated*** @deprecated unsafe pos
     int  w_cnt;
     std::vector<std::string> words;
     std::vector<int> lex_ids;
@@ -34,10 +32,10 @@ namespace wnb
     std::string gloss;
 
     // extra
-    pos_t pos;        ///< pos
-    int id;           ///< unique identifier
+    pos_t pos;        ///< pos (replace ss_type)
+    int id;           ///< unique identifier (replace synset_offset)
     int sense_number; ///< http://wordnet.princeton.edu/man/senseidx.5WN.html
-    std::vector<std::pair<std::string, int> > tag_cnts;      ///< http://wordnet.princeton.edu/man/senseidx.5WN.html
+    std::vector<std::pair<std::string, int> > tag_cnts; ///< http://wordnet.princeton.edu/man/senseidx.5WN.html
 
     bool operator==(const synset& s) const { return (id == s.id);  }
     bool operator<(const synset& s) const { return (id < s.id);   }
@@ -58,7 +56,7 @@ namespace wnb
   struct index
   {
     std::string lemma;
-    char  pos_;        ///< ***Deprecated*** @deprecated unsafe pos
+
     int   synset_cnt;
     int   p_cnt;
     int   sense_cnt;
@@ -67,7 +65,7 @@ namespace wnb
     std::vector<int>         synset_offsets;
 
     // extra
-    std::vector<int> ids;
+    std::vector<int> synset_ids;
     pos_t pos;
 
     bool operator<(const index& b) const
@@ -88,10 +86,7 @@ namespace wnb
     wordnet(const std::string& wordnet_dir, bool verbose=false);
 
     /// Return synsets matching word
-    std::vector<synset> get_synsets(const std::string& word);
-
-    std::vector<synset> get_synsets(const std::string& word, pos_t pos);
-
+    std::vector<synset> get_synsets(const std::string& word, pos_t pos = (pos_t)-1);
     //FIXME: todo
     std::vector<synset> get_synset(const std::string& word, char pos, int i);
 
