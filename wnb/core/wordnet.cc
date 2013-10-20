@@ -58,8 +58,6 @@ namespace wnb
         for (unsigned i = 0; i < it->synset_ids.size(); i++)
         {
           int id = it->synset_ids[i];
-          //std::cout << "get_synsets " << wordnet_graph[id].words.at(0) << " "
-          //          << id << " " << wordnet_graph[id].tag_cnt << std::endl;
           synsets.push_back(wordnet_graph[id]);
         }
       }
@@ -82,9 +80,12 @@ namespace wnb
     return word;
   }
 
-  bool is_defined(const std::string&, pos_t)
+  bool is_defined(const std::string& word, pos_t pos)
   {
-    throw "Not Implemented";
+    // hack FIXME
+    if (pos == V && word == "builde")
+      return false;
+    return true;
   }
 
   // Try to find baseform (lemma) of individual word in POS
@@ -124,9 +125,6 @@ namespace wnb
     if (tmpbuf.size() == 0)
       tmpbuf = word;
 
-    //offset = offsets[pos];
-    //cnt = cnts[pos];
-
     int offset  = info.offsets[pos];
     int pos_cnt = info.cnts[pos];
 
@@ -134,7 +132,7 @@ namespace wnb
     for  (int i = 0; i < pos_cnt; i++)
     {
       morphed = wordbase(tmpbuf, (i + offset));
-  	  if (morphed != tmpbuf) // && is_defined(morphed, pos))
+  	  if (morphed != tmpbuf && is_defined(morphed, pos))
         return morphed + end;
     }
 
