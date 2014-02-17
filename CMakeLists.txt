@@ -34,7 +34,7 @@ ADD_CUSTOM_TARGET(dist
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 ADD_CUSTOM_TARGET(check
-  COMMAND ./check/check.sh)
+  COMMAND ./check/check.sh ./check/list.txt)
 
 
 ## Compiler flags

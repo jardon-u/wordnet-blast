@@ -29,7 +29,7 @@ namespace wnb
     void load_data_row_words(std::stringstream& srow, synset& synset)
     {
       srow >> std::hex >> synset.w_cnt >> std::dec;
-      for (int i = 0; i < synset.w_cnt; i++)
+      for (std::size_t i = 0; i < synset.w_cnt; i++)
       {
         //word lex_id
 
@@ -73,7 +73,7 @@ namespace wnb
                             wordnet& wn, info_helper& info)
     {
       srow >> synset.p_cnt;
-      for (int i = 0; i < synset.p_cnt; i++)
+      for (std::size_t i = 0; i < synset.p_cnt; i++)
       {
         //http://wordnet.princeton.edu/wordnet/man/wndb.5WN.html#sect3
         //pointer_symbol  synset_offset  pos  source/target
@@ -185,7 +185,7 @@ namespace wnb
       srow >> index.p_cnt;
 
       std::string tmp_p;
-      for (int i = 0; i < index.p_cnt; i++)
+      for (std::size_t i = 0; i < index.p_cnt; i++)
       {
         srow >> tmp_p;
         index.ptr_symbols.push_back(tmp_p);
@@ -215,7 +215,8 @@ namespace wnb
       char row[MAX_LENGTH];
 
       //skip header
-      for(unsigned i = 0; i < 29; i++)
+      const unsigned int header_nb_lines = 29;
+      for(std::size_t i = 0; i < header_nb_lines; i++)
         fin.getline(row, MAX_LENGTH);
 
       //parse data line

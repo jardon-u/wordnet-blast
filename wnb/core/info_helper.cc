@@ -73,7 +73,6 @@ namespace wnb
   info_helper::update_pos_maps()
   {
     // http://wordnet.princeton.edu/wordnet/man/wndb.5WN.html#sect3
-    //map.insert(std::pair<'s',????>); //FIXME: What shall we do here ?
 
     indice_offset[0] = 0; // dummy
 
@@ -111,10 +110,11 @@ namespace wnb
     std::string row;
 
     //skip header
-    for(unsigned i = 0; i < 29; i++)
+    const unsigned int header_nb_lines = 29;
+    for(std::size_t i = 0; i < header_nb_lines; i++)
       std::getline(file, row);
 
-    std::size_t ind = 0;
+    int ind = 0;
     //parse data line
     while (std::getline(file, row))
     {

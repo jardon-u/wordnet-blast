@@ -25,10 +25,10 @@ namespace wnb
   struct synset
   {
     int  lex_filenum;
-    int  w_cnt;
+    std::size_t  w_cnt;
     std::vector<std::string> words;
     std::vector<int> lex_ids;
-    int p_cnt;
+    std::size_t p_cnt;
     std::string gloss;
 
     // extra
@@ -57,10 +57,10 @@ namespace wnb
   {
     std::string lemma;
 
-    int   synset_cnt;
-    int   p_cnt;
-    int   sense_cnt;
-    float tagsense_cnt;
+    std::size_t synset_cnt;
+    std::size_t p_cnt;
+    std::size_t sense_cnt;
+    float       tagsense_cnt;
     std::vector<std::string> ptr_symbols;
     std::vector<int>         synset_offsets;
 

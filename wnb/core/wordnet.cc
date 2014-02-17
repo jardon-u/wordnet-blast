@@ -55,7 +55,7 @@ namespace wnb
     {
       if (pos != -1 && it->pos == pos)
       {
-        for (unsigned i = 0; i < it->synset_ids.size(); i++)
+        for (std::size_t i = 0; i < it->synset_ids.size(); i++)
         {
           int id = it->synset_ids[i];
           synsets.push_back(wordnet_graph[id]);
