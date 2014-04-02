@@ -7,7 +7,6 @@
 
 namespace wnb
 {
-
   namespace internal
   {
 
@@ -82,7 +81,7 @@ namespace wnb
       vertex u = q.front(); q.pop();
 
       int new_d = map[u] + 1;
-      for (tie(e, e_end) = out_edges(u, fg); e != e_end; ++e)
+      for (boost::tuples::tie(e, e_end) = out_edges(u, fg); e != e_end; ++e)
       {
         vertex v = target(*e,fg);
         q.push(v);
