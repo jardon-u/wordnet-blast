@@ -115,8 +115,11 @@ void wn_like(wordnet& wn, std::string& word)
     std::cout << "The "
               << get_name_from_pos((pos_t)p)
               << " " << mword << " has "
-              << synsets.size()
-              << " senses";
+              << synsets.size();
+    if (synsets.size() == 1)
+      std::cout << " sense";
+    else
+      std::cout << " senses";
 
     int tagsense_cnt = 0; // FIXME: already in index_list
     for (std::size_t j = 0; j < synsets.size(); j++)
