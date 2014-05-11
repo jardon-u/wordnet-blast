@@ -10,7 +10,7 @@ check() {
     time for i in `cat ${word_list}`; do wn $i -over; done > ${word_list}.wn
 
     echo "diff ${word_list}.wn ${word_list}.blast -b"
-    diff ${word_list}.wn ${word_list}.blast -b
+    colordiff -y ${word_list}.wn ${word_list}.blast -b
 }
 
 check "$1"
