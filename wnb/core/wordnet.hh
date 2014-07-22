@@ -90,6 +90,9 @@ namespace wnb
     //FIXME: todo
     std::vector<synset> get_synset(const std::string& word, char pos, int i);
 
+    std::pair<std::vector<index>::iterator, std::vector<index>::iterator>
+    get_indexes(const std::string& word);
+
     std::string wordbase(const std::string& word, int ender);
 
     std::string morphword(const std::string& word, pos_t pos);

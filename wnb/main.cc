@@ -96,62 +96,58 @@ std::string& replace(std::string& s, char a, char b)
   return s;
 }
 
+void print_synsets(pos_t pos, wnb::index& idx, wordnet& wn)
+{
+  std::string& mword = idx.lemma;
+  std::cout << "\nOverview of " << get_name_from_pos(pos) << " " << mword << "\n\n";
+  std::cout << "The " << get_name_from_pos(pos) << " " << mword << " has "
+            << idx.synset_ids.size() << ((idx.synset_ids.size() == 1) ? " sense": " senses");
+
+  if (idx.tagsense_cnt != 0)
+    std::cout << " (first " << idx.tagsense_cnt << " from tagged texts)";
+  else
+    std::cout << " (no senses from tagged texts)";
+
+  std::cout << "\n";
+  std::cout << "                                      \n";
+
+  for (std::size_t i = 0; i < idx.synset_ids.size(); i++)
+  {
+    int id = idx.synset_ids[i];
+    synset synset = wn.wordnet_graph[id];
+
+    std::cout << i+1 << ". "; // << (int)synsets[j].pos << "| ";
+
+    for (std::size_t k = 0; k < synset.tag_cnts.size(); k++)
+      if (synset.tag_cnts[k].first == mword)
+        std::cout << "(" << synset.tag_cnts[k].second << ") ";
+    std::cout << replace (synset.words[0], '_', ' ');
+    for (std::size_t k = 1; k < synset.words.size(); k++)
+      std::cout << ", " << replace (synset.words[k], '_', ' ');
+    boost::algorithm::trim(synset.gloss);
+    std::cout << " -- (" << synset.gloss << ")";
+    std::cout << std::endl;
+  }
+}
+
 void wn_like(wordnet& wn, std::string& word)
 {
-  static const unsigned nb_pos = POS_ARRAY_SIZE-1;
-  for (unsigned p = 1; p <= nb_pos; p++)
+  for (unsigned p = 0; p < POS_ARRAY_SIZE; p++)
   {
-    std::vector<synset> synsets = wn.get_synsets(word, (pos_t)p);
-    if (synsets.size() == 0)
+    pos_t pos = (pos_t)p;
+    std::string mword = wn.morphword(word, pos);
+    if (mword == "")
       continue;
 
-    std::string mword = wn.morphword(word, (pos_t)p);
-    std::cerr << word << " " << mword << std::endl;
+    typedef std::vector<wnb::index> vi;
+    std::pair<vi::iterator,vi::iterator> bounds = wn.get_indexes(mword);
 
-    std::cout << "\nOverview of "
-              << get_name_from_pos((pos_t)p)
-              << " " << mword << "\n\n";
-
-    std::cout << "The "
-              << get_name_from_pos((pos_t)p)
-              << " " << mword << " has "
-              << synsets.size();
-    if (synsets.size() == 1)
-      std::cout << " sense";
-    else
-      std::cout << " senses";
-
-    int tagsense_cnt = 0; // FIXME: already in index_list
-    for (std::size_t j = 0; j < synsets.size(); j++)
+    for (vi::iterator it = bounds.first; it != bounds.second; it++)
     {
-      for (std::size_t k = 0; k < synsets[j].tag_cnts.size(); k++)
-        if (synsets[j].tag_cnts[k].first == mword)
-          tagsense_cnt += (synsets[j].tag_cnts[k].second != 0);
-    }
-
-    if (tagsense_cnt != 0)
-      std::cout << " (first " << tagsense_cnt << " from tagged texts)";
-    if (tagsense_cnt == 1)
-      std::cout << " (first " << tagsense_cnt << " from tagged text)";
-    else
-      std::cout << " (no senses from tagged texts)";
-
-    std::cout << "\n";
-    std::cout << "                                      \n";
-
-    for (std::size_t j = 0; j < synsets.size(); j++)
-    {
-      std::cout << j+1 << ". "; // << (int)synsets[j].pos << "| ";
-
-      for (std::size_t k = 0; k < synsets[j].tag_cnts.size(); k++)
-        if (synsets[j].tag_cnts[k].first == mword)
-          std::cout << "(" << synsets[j].tag_cnts[k].second << ") ";
-      std::cout << replace (synsets[j].words[0], '_', ' ');
-      for (std::size_t k = 1; k < synsets[j].words.size(); k++)
-        std::cout << ", " << replace (synsets[j].words[k], '_', ' ');
-      boost::algorithm::trim(synsets[j].gloss);
-      std::cout << " -- (" << synsets[j].gloss << ")";
-      std::cout << std::endl;
+      if (pos != -1 && it->pos == pos)
+      {
+        print_synsets(pos, *it, wn);
+      }
     }
   }
 }

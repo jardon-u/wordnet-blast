@@ -44,11 +44,8 @@ namespace wnb
       return synsets;
 
     // binary_search
-    index light_index;
-    light_index.lemma = mword; //(mword != "") ? mword : word;
     typedef std::vector<index> vi;
-    std::pair<vi::iterator,vi::iterator> bounds =
-      std::equal_range(index_list.begin(), index_list.end(), light_index);
+    std::pair<vi::iterator,vi::iterator> bounds = get_indexes(mword);
 
     vi::iterator it;
     for (it = bounds.first; it != bounds.second; it++)
@@ -64,6 +61,19 @@ namespace wnb
     }
 
     return synsets;
+  }
+
+  std::pair<std::vector<index>::iterator, std::vector<index>::iterator>
+  wordnet::get_indexes(const std::string& word)
+  {
+    index light_index;
+    light_index.lemma = word;
+
+    typedef std::vector<index> vi;
+    std::pair<vi::iterator,vi::iterator> bounds =
+      std::equal_range(index_list.begin(), index_list.end(), light_index);
+
+    return bounds;
   }
 
   std::string
