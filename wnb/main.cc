@@ -131,6 +131,8 @@ void wn_like(wordnet& wn, std::string& word)
 
     if (tagsense_cnt != 0)
       std::cout << " (first " << tagsense_cnt << " from tagged texts)";
+    if (tagsense_cnt == 1)
+      std::cout << " (first " << tagsense_cnt << " from tagged text)";
     else
       std::cout << " (no senses from tagged texts)";
 
