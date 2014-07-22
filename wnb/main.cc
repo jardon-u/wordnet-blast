@@ -130,24 +130,19 @@ void print_synsets(pos_t pos, wnb::index& idx, wordnet& wn)
   }
 }
 
-void wn_like(wordnet& wn, std::string& word)
+void wn_like(wordnet& wn, const std::string& word, pos_t pos)
 {
-  for (unsigned p = 0; p < POS_ARRAY_SIZE; p++)
+  if (word == "")
+    return;
+
+  typedef std::vector<wnb::index> vi;
+  std::pair<vi::iterator,vi::iterator> bounds = wn.get_indexes(word);
+
+  for (vi::iterator it = bounds.first; it != bounds.second; it++)
   {
-    pos_t pos = (pos_t)p;
-    std::string mword = wn.morphword(word, pos);
-    if (mword == "")
-      continue;
-
-    typedef std::vector<wnb::index> vi;
-    std::pair<vi::iterator,vi::iterator> bounds = wn.get_indexes(mword);
-
-    for (vi::iterator it = bounds.first; it != bounds.second; it++)
+    if (pos != -1 && it->pos == pos)
     {
-      if (pos != -1 && it->pos == pos)
-      {
-        print_synsets(pos, *it, wn);
-      }
+      print_synsets(pos, *it, wn);
     }
   }
 }
@@ -156,7 +151,15 @@ void batch_test(wordnet& wn, std::vector<std::string>& word_list)
 {
   for (std::size_t i = 0; i < word_list.size(); i++)
   {
-    wn_like(wn, word_list[i]);
+    for (unsigned p = 1; p < POS_ARRAY_SIZE; p++)
+    {
+      pos_t pos = (pos_t) p;
+
+      wn_like(wn, word_list[i], pos);
+      std::string mword = wn.morphword(word_list[i], pos);
+      if (mword != word_list[i])
+        wn_like(wn, mword, pos);
+    }
   }
 }
 

@@ -258,7 +258,7 @@ namespace wnb
       load_wordnet_exc(dn, cat, wn, info);
     }
 
-    // FIXME: this file is not found in any packaged version of wordnet
+    // FIXME: this file is not in all packaged version of wordnet
     void load_wordnet_index_sense(const std::string& dn, wordnet& wn, info_helper& info)
     {
       std::string fn = dn + "index.sense";
@@ -291,11 +291,49 @@ namespace wnb
         int tag_cnt;
         srow >> tag_cnt;
         if (tag_cnt != 0)
-          wn.wordnet_graph[u].tag_cnts.push_back(make_pair(word,tag_cnt));
+          wn.wordnet_graph[u].tag_cnts.push_back( make_pair(word,tag_cnt) );
 
         //if (synset_offset == 2121620)
         //  std::cout << u << " " << word << " " << synset_offset << " " <<  wn.wordnet_graph[u].tag_cnt << " "
         //            <<  wn.wordnet_graph[u].words[0] << std::endl;
+      }
+    }
+
+    // wn -over used info in cntlist even if this is deprecated
+    // It is ok not to FIX and use this function
+    void load_wordnet_cntlist(const std::string& dn, wordnet& wn, info_helper& info)
+    {
+      std::string fn = dn + "cntlist";
+      std::ifstream fin(fn.c_str());
+      if (!fin.is_open())
+        throw std::runtime_error("File Not Found: " + fn);
+
+      std::string sense_key;
+      int sense_number;
+      int tag_cnt;
+
+      std::string row;
+      while (std::getline(fin, row))
+      {
+        std::stringstream srow(row);
+
+        srow >> sense_key;
+        srow >> sense_number;
+        srow >> tag_cnt;
+
+        // Get the pos of the lemma
+        std::string word = ext::split(sense_key,'%').at(0);
+        std::stringstream tmp(ext::split(ext::split(sense_key,'%').at(1), ':').at(0));
+        int ss_type;
+        tmp >> ss_type;
+        pos_t pos = (pos_t) ss_type;
+
+        // Update synset info
+        int synset_offset; // FIXME
+        int u = info.compute_indice(synset_offset, pos);
+        wn.wordnet_graph[u].sense_number += sense_number;
+        if (tag_cnt != 0)
+          wn.wordnet_graph[u].tag_cnts.push_back( make_pair(word,tag_cnt) );
       }
     }
 
