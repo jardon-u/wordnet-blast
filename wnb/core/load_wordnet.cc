@@ -275,8 +275,9 @@ namespace wnb
         srow >> sense_key;
 
         // Get the pos of the lemma
-        std::string word = ext::split(sense_key,'%').at(0);
-        std::stringstream tmp(ext::split(ext::split(sense_key,'%').at(1), ':').at(0));
+        std::vector<std::string> sk = ext::split(sense_key,'%');
+        std::string word = sk.at(0);
+        std::stringstream tmp(ext::split(sk.at(1), ':').at(0));
         int ss_type;
         tmp >> ss_type;
         pos_t pos =  (pos_t) ss_type;
@@ -294,7 +295,8 @@ namespace wnb
           wn.wordnet_graph[u].tag_cnts.push_back( make_pair(word,tag_cnt) );
 
         //if (synset_offset == 2121620)
-        //  std::cout << u << " " << word << " " << synset_offset << " " <<  wn.wordnet_graph[u].tag_cnt << " "
+        //  std::cout << u << " " << word << " " << synset_offset << " "
+        //            <<  wn.wordnet_graph[u].tag_cnt << " "
         //            <<  wn.wordnet_graph[u].words[0] << std::endl;
       }
     }

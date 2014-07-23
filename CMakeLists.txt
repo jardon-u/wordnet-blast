@@ -39,7 +39,7 @@ ADD_CUSTOM_TARGET(check
 
 ## Compiler flags
 IF (CMAKE_COMPILER_IS_GNUCXX)
-  list(APPEND CMAKE_CXX_FLAGS " -O3 -DNDEBUG -Wall -Wextra")
+  list(APPEND CMAKE_CXX_FLAGS " --std=c++11 -O3 -DNDEBUG -Wall -Wextra")
   #list(APPEND CMAKE_CXX_FLAGS " -g -Wall -Wextra")
 ENDIF()
 

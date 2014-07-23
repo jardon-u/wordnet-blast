@@ -13,6 +13,8 @@
 #include <wnb/std_ext.hh>
 
 using namespace wnb;
+using namespace boost;
+using namespace boost::algorithm;
 
 bool usage(int argc, char ** argv)
 {
@@ -51,8 +53,8 @@ compute_similarities(wordnet& wn,
 
   nltk_similarity path_similarity(wn);
   {
-    boost::progress_timer t;
-    boost::progress_display show_progress(word_list.size());
+    progress_timer t;
+    progress_display show_progress(word_list.size());
 
     for (unsigned k = 0; k < word_list.size(); k++)
     {
@@ -88,14 +90,6 @@ void similarity_test(wordnet&                  wn,
     std::cout << wslist[i].w << " " << wslist[i].s << std::endl;
 }
 
-std::string& replace(std::string& s, char a, char b)
-{
-  for (std::size_t i = 0; i < s.size(); i++)
-    if (s[i] == a)
-      s[i] = b;
-  return s;
-}
-
 void print_synsets(pos_t pos, wnb::index& idx, wordnet& wn)
 {
   std::string& mword = idx.lemma;
@@ -116,15 +110,17 @@ void print_synsets(pos_t pos, wnb::index& idx, wordnet& wn)
     int id = idx.synset_ids[i];
     synset synset = wn.wordnet_graph[id];
 
-    std::cout << i+1 << ". "; // << (int)synsets[j].pos << "| ";
-
+    std::cout << i+1 << ". ";
     for (std::size_t k = 0; k < synset.tag_cnts.size(); k++)
+    {
       if (synset.tag_cnts[k].first == mword)
         std::cout << "(" << synset.tag_cnts[k].second << ") ";
-    std::cout << replace (synset.words[0], '_', ' ');
-    for (std::size_t k = 1; k < synset.words.size(); k++)
-      std::cout << ", " << replace (synset.words[k], '_', ' ');
-    boost::algorithm::trim(synset.gloss);
+    }
+
+    std::for_each(synset.words.begin(), synset.words.end(),
+                  [](std::string& w) { replace_all(w, "_", " "); });
+    std::cout << join(synset.words, ", ");
+    trim(synset.gloss);
     std::cout << " -- (" << synset.gloss << ")";
     std::cout << std::endl;
   }
