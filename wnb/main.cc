@@ -108,7 +108,7 @@ void print_synsets(pos_t pos, wnb::index& idx, wordnet& wn)
   for (std::size_t i = 0; i < idx.synset_ids.size(); i++)
   {
     int id = idx.synset_ids[i];
-    synset synset = wn.wordnet_graph[id];
+    const synset& synset = wn.wordnet_graph[id];
 
     std::cout << i+1 << ". ";
     for (std::size_t k = 0; k < synset.tag_cnts.size(); k++)
@@ -117,11 +117,8 @@ void print_synsets(pos_t pos, wnb::index& idx, wordnet& wn)
         std::cout << "(" << synset.tag_cnts[k].second << ") ";
     }
 
-    std::for_each(synset.words.begin(), synset.words.end(),
-                  [](std::string& w) { replace_all(w, "_", " "); });
-    std::cout << join(synset.words, ", ");
-    trim(synset.gloss);
-    std::cout << " -- (" << synset.gloss << ")";
+    std::cout << replace_all_copy(join(synset.words, ", "), "_", " ");
+    std::cout << " -- (" << trim_copy(synset.gloss) << ")";
     std::cout << std::endl;
   }
 }
