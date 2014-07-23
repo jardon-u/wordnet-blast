@@ -117,7 +117,11 @@ void print_synsets(pos_t pos, wnb::index& idx, wordnet& wn)
         std::cout << "(" << synset.tag_cnts[k].second << ") ";
     }
 
-    std::cout << replace_all_copy(join(synset.words, ", "), "_", " ");
+    std::vector<std::string> nwords;
+    for (auto& w : synset.words)
+      nwords.push_back((pos == A) ? w.substr(0, w.find_first_of("(")) : w);
+
+    std::cout << replace_all_copy(join(nwords, ", "), "_", " ");
     std::cout << " -- (" << trim_copy(synset.gloss) << ")";
     std::cout << std::endl;
   }
