@@ -40,8 +40,9 @@ namespace wnb
 
     // morphing
     std::string mword = morphword(word, pos);
-    if (mword == "")
+    if (mword == "") {
       return synsets;
+    }
 
     // binary_search
     typedef std::vector<index> vi;
@@ -50,7 +51,7 @@ namespace wnb
     vi::iterator it;
     for (it = bounds.first; it != bounds.second; it++)
     {
-      if (pos != -1 && it->pos == pos)
+      if (pos == pos_t::UNKNOWN || it->pos == pos)
       {
         for (std::size_t i = 0; i < it->synset_ids.size(); i++)
         {
@@ -135,18 +136,22 @@ namespace wnb
     if (tmpbuf.size() == 0)
       tmpbuf = word;
 
-    int offset  = info.offsets[pos];
-    int pos_cnt = info.cnts[pos];
-
-    std::string morphed;
-    for  (int i = 0; i < pos_cnt; i++)
+    // TODO: Bug? This will fail as 'info.offsets' is size 4 and 'pos' can go up to '5'
+    if (pos != pos_t::UNKNOWN) 
     {
-      morphed = wordbase(tmpbuf, (i + offset));
-  	  if (morphed != tmpbuf && is_defined(morphed, pos))
-        return morphed + end;
-    }
+      int offset  = info.offsets[pos];
+      int pos_cnt = info.cnts[pos];
 
-    return morphed;
+      std::string morphed;
+      for  (int i = 0; i < pos_cnt; i++)
+      {
+        morphed = wordbase(tmpbuf, (i + offset));
+        if (morphed != tmpbuf && is_defined(morphed, pos))
+           return morphed + end;
+      }
+      return morphed;
+    }
+    return word;
   }
 
 } // end of namespace wnb

@@ -86,7 +86,7 @@ namespace wnb
     wordnet(const std::string& wordnet_dir, bool verbose=false);
 
     /// Return synsets matching word
-    std::vector<synset> get_synsets(const std::string& word, pos_t pos = (pos_t)-1);
+    std::vector<synset> get_synsets(const std::string& word, pos_t pos = pos_t::UNKNOWN);
     //FIXME: todo
     std::vector<synset> get_synset(const std::string& word, char pos, int i);
 
