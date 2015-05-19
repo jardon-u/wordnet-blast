@@ -93,7 +93,7 @@ namespace wnb
 
   bool is_defined(const std::string& word, pos_t pos)
   {
-    // hack FIXME
+    // hack FIXME: Some verbs are built with -e suffix ('builde' is just an example).
     if (pos == V && word == "builde")
       return false;
     return true;
