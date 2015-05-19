@@ -66,8 +66,9 @@ namespace wnb
     "", "", "e", "e"
   };
 
-  const int info_helper::offsets[info_helper::NUMPARTS] = { 0, 0, 8, 16 };
-  const int info_helper::cnts[info_helper::NUMPARTS]    = { 0, 8, 8, 4 };
+  // FIXME: Check offsets and cnts values (now NUMPARTS equals 6, before was 4)
+  const int info_helper::offsets[info_helper::NUMPARTS] = { 0, 0, 8, 16, 0, 0 };
+  const int info_helper::cnts[info_helper::NUMPARTS]    = { 0, 8, 8, 4, 0, 0 };
 
   void
   info_helper::update_pos_maps()
@@ -80,7 +81,7 @@ namespace wnb
     indice_offset[2] = indice_offset[1] + pos_maps[N].size(); // V
     indice_offset[3] = indice_offset[2] + pos_maps[V].size(); // A
     indice_offset[4] = indice_offset[3] + pos_maps[A].size(); // R
-    indice_offset[5] = indice_offset[4] + pos_maps[S].size(); // S
+    indice_offset[5] = indice_offset[4] + pos_maps[R].size(); // S
 
   }
 

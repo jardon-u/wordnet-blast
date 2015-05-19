@@ -15,7 +15,7 @@ namespace wnb
   {
     /// Symbols' size
     static const std::size_t NB_SYMBOLS = 27;
-    static const std::size_t NUMPARTS = 4;
+    static const std::size_t NUMPARTS = POS_ARRAY_SIZE;
 
     /// List of pointer symbols
     static const char *      symbols[NB_SYMBOLS];
@@ -77,7 +77,7 @@ namespace wnb
     // i2of_t verb_map;
 
     pos_i2of_t  pos_maps;
-    std::size_t indice_offset[6];
+    std::size_t indice_offset[POS_ARRAY_SIZE];
   };
 
   /// Create a new info_help based on wordnet data located in dn (../dict/)
