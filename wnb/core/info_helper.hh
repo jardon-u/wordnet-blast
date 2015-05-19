@@ -64,15 +64,9 @@ namespace wnb
       throw std::runtime_error("Symbol NOT FOUND.");
     }
 
-    //FIXME: use a hardcoded switch
-    pos_t get_pos(char c)
+    pos_t get_pos(const char& c)
     {
-      unsigned i = 0;
-
-      for (i = 0;  i < POS_ARRAY_SIZE; i++)
-        if (c == POS_ARRAY[i])
-          return pos_t(i);
-      throw std::runtime_error(std::string("pos ") + c + " NOT FOUND.");
+      return get_pos_from_char(c);
     }
 
   public:
