@@ -40,9 +40,8 @@ namespace wnb
 
     // morphing
     std::string mword = morphword(word, pos);
-    if (mword == "") {
+    if (mword == "")
       return synsets;
-    }
 
     // binary_search
     typedef std::vector<index> vi;
