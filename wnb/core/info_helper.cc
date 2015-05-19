@@ -66,7 +66,6 @@ namespace wnb
     "", "", "e", "e"
   };
 
-  // FIXME: Check offsets and cnts values (now NUMPARTS equals 6, before was 4)
   const int info_helper::offsets[info_helper::NUMPARTS] = { 0, 0, 8, 16, 0, 0 };
   const int info_helper::cnts[info_helper::NUMPARTS]    = { 0, 8, 8, 4, 0, 0 };
 

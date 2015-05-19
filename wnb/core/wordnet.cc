@@ -136,7 +136,6 @@ namespace wnb
     if (tmpbuf.size() == 0)
       tmpbuf = word;
 
-    // TODO: Bug? This will fail as 'info.offsets' is size 4 and 'pos' can go up to '5'
     if (pos != pos_t::UNKNOWN) 
     {
       int offset  = info.offsets[pos];
