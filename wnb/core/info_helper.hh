@@ -83,7 +83,7 @@ namespace wnb
     // i2of_t verb_map;
 
     pos_i2of_t  pos_maps;
-    std::size_t indice_offset[5];
+    std::size_t indice_offset[6];
   };
 
   /// Create a new info_help based on wordnet data located in dn (../dict/)
