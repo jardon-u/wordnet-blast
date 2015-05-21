@@ -21,7 +21,7 @@ LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
 
 # Project
 #--------------------------------------------------
-
+ADD_DEFINITIONS(-D_UNICODE -DUNICODE)
 LINK_DIRECTORIES(${wnb_SOURCE_DIR}/lib)
 INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR} ${PROJECT_SOURCE_DIR})
 
@@ -44,7 +44,13 @@ IF (CMAKE_COMPILER_IS_GNUCXX)
 ENDIF()
 
 SET(WNB_SRCS wnb/core/wordnet.cc
-  wnb/core/load_wordnet.cc wnb/core/info_helper.cc)
+			 wnb/core/load_wordnet.cc
+			 wnb/core/info_helper.cc
+		     wnb/core/wordnet.hh
+			 wnb/core/load_wordnet.hh
+			 wnb/core/info_helper.hh
+			 wnb/core/pos_t.hh
+			 )
 
 # Executable
 #--------------------------------------------------
