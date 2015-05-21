@@ -70,9 +70,11 @@ ENDIF()
 # Install targets
 #--------------------------------------------------
 # Applying workaround to preserve hierarchy of include files (see http://cmake.3232098.n2.nabble.com/Install-header-directory-hierarchy-td5638507.html)
+set_target_properties(wnb PROPERTIES DEBUG_POSTFIX d)
 set(HEADERS   wnb/core/info_helper.hh
               wnb/core/wordnet.hh
               wnb/core/pos_t.hh
+              wnb/core/load_wordnet.hh
               wnb/bfs.hh
               wnb/nltk_similarity.hh
               wnb/std_ext.hh
