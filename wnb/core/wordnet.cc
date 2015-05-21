@@ -30,7 +30,7 @@ namespace wnb
       std::cout << "nb_synsets: " << info.nb_synsets() << std::endl;
     }
     //FIXME: this check is only valid for Wordnet 3.0
-    assert(info.nb_synsets() == 142335);//117659);
+    //assert(info.nb_synsets() == 142335);//117659);
   }
 
   std::vector<synset>
