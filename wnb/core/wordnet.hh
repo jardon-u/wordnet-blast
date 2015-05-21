@@ -13,13 +13,12 @@
 
 # include "load_wordnet.hh"
 # include "pos_t.hh"
+# include "info_helper.hh"
 
 namespace wnb
 {
 
   /// More info here: http://wordnet.princeton.edu/wordnet/man/wndb.5WN.html
-
-  struct info_helper;
 
   /// Synset
   struct synset
