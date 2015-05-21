@@ -86,16 +86,16 @@ namespace wnb
     wordnet(const std::string& wordnet_dir, bool verbose=false);
 
     /// Return synsets matching word
-    std::vector<synset> get_synsets(const std::string& word, pos_t pos = pos_t::UNKNOWN);
+    std::vector<synset> get_synsets(const std::string& word, pos_t pos = pos_t::UNKNOWN) const;
     //FIXME: todo
-    std::vector<synset> get_synset(const std::string& word, char pos, int i);
+    std::vector<synset> get_synset(const std::string& word, char pos, int i) const;
 
-    std::pair<std::vector<index>::iterator, std::vector<index>::iterator>
-    get_indexes(const std::string& word);
+	std::pair<std::vector<index>::const_iterator, std::vector<index>::const_iterator>
+    get_indexes(const std::string& word) const;
 
-    std::string wordbase(const std::string& word, int ender);
+    std::string wordbase(const std::string& word, int ender) const;
 
-    std::string morphword(const std::string& word, pos_t pos);
+    std::string morphword(const std::string& word, pos_t pos) const;
 
     std::vector<index> index_list;    ///< index list // FIXME: use a map
     graph              wordnet_graph; ///< synsets graph
