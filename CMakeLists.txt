@@ -29,7 +29,7 @@ LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
 #--------------------------------------------------
 
 LINK_DIRECTORIES(${wnb_SOURCE_DIR}/lib)
-INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR})
+INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR} ${PROJECT_SOURCE_DIR})
 
 SET(PROJECT_VERSION "0.6")
 SET(ARCHIVE_NAME ${CMAKE_PROJECT_NAME}-${PROJECT_VERSION})
@@ -66,3 +66,31 @@ IF (Boost_FOUND)
   TARGET_LINK_LIBRARIES(wntest ${Boost_LIBRARIES})
   TARGET_LINK_LIBRARIES(wnb ${Boost_LIBRARIES})
 ENDIF()
+
+# Install targets
+#--------------------------------------------------
+# Applying workaround to preserve hierarchy of include files (see http://cmake.3232098.n2.nabble.com/Install-header-directory-hierarchy-td5638507.html)
+set(HEADERS   wnb/core/info_helper.hh
+              wnb/core/wordnet.hh
+              wnb/core/pos_t.hh
+              wnb/bfs.hh
+              wnb/nltk_similarity.hh
+              wnb/std_ext.hh
+              ) 
+               
+install(TARGETS wnb
+  RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" COMPONENT bin
+  LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" COMPONENT shlib
+  ARCHIVE DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" COMPONENT lib  
+  COMPONENT wnb)
+  
+install(TARGETS wntest
+  RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" COMPONENT bin
+  LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" COMPONENT shlib
+  ARCHIVE DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" COMPONENT lib  
+  COMPONENT wntest)
+  
+foreach(HEADER ${HEADERS}) 
+   string(REGEX MATCH "(.*)[/\\]" DIR ${HEADER}) 
+   install(FILES ${HEADER} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/${DIR}) 
+endforeach(HEADER HEADERS) 
