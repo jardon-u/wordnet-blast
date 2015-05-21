@@ -90,9 +90,9 @@ void similarity_test(wordnet&                  wn,
     std::cout << wslist[i].w << " " << wslist[i].s << std::endl;
 }
 
-void print_synsets(pos_t pos, wnb::index& idx, wordnet& wn)
+void print_synsets(pos_t pos, const wnb::index& idx, wordnet& wn)
 {
-  std::string& mword = idx.lemma;
+  const std::string& mword = idx.lemma;
   std::cout << "\nOverview of " << get_name_from_pos(pos) << " " << mword << "\n\n";
   std::cout << "The " << get_name_from_pos(pos) << " " << mword << " has "
             << idx.synset_ids.size() << ((idx.synset_ids.size() == 1) ? " sense": " senses");
@@ -133,9 +133,9 @@ void wn_like(wordnet& wn, const std::string& word, pos_t pos)
     return;
 
   typedef std::vector<wnb::index> vi;
-  std::pair<vi::iterator,vi::iterator> bounds = wn.get_indexes(word);
+  std::pair<vi::const_iterator, vi::const_iterator> bounds = wn.get_indexes(word);
 
-  for (vi::iterator it = bounds.first; it != bounds.second; it++)
+  for (vi::const_iterator it = bounds.first; it != bounds.second; it++)
   {
     if (pos != -1 && it->pos == pos)
     {

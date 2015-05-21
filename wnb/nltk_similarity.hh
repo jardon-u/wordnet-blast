@@ -36,7 +36,7 @@ namespace wnb
   {
 
     typedef boost::property_map<wordnet::graph,
-                                int ptr::*>::type PointerSymbolMap;
+                                int ptr::*>::const_type PointerSymbolMap;
     typedef boost::filtered_graph<wordnet::graph,
                                   internal::hyper_edge<PointerSymbolMap> > G;
     typedef boost::graph_traits<G>::vertex_descriptor vertex;
@@ -46,24 +46,24 @@ namespace wnb
 
   public:
 
-    nltk_similarity(wordnet& wn)
+    nltk_similarity(const wordnet& wn)
       : filter(get(&ptr::pointer_symbol, wn.wordnet_graph)),
-                   fg(wn.wordnet_graph, filter)
+        fg(wn.wordnet_graph, filter)
     { }
 
     /// Get list of hypernyms of s along with distance to s
-    std::map<vertex, int> hypernym_map(vertex s);
+    std::map<vertex, int> hypernym_map(vertex s) const;
 
     /// Get shortest path between and synset1 and synset2.
-    int shortest_path_distance(const synset& synset1, const synset& synset2);
+    int shortest_path_distance(const synset& synset1, const synset& synset2) const;
 
     /// return disance
-    float operator()(const synset& synset1, const synset& synset2, int=0);
+    float operator()(const synset& synset1, const synset& synset2, int=0) const;
 
   };
 
   std::map<nltk_similarity::vertex, int>
-  nltk_similarity::hypernym_map(nltk_similarity::vertex s)
+  nltk_similarity::hypernym_map(nltk_similarity::vertex s) const
   {
     std::map<vertex, int> map;
 
@@ -103,7 +103,7 @@ namespace wnb
 
 
   int
-  nltk_similarity::shortest_path_distance(const synset& synset1, const synset& synset2)
+  nltk_similarity::shortest_path_distance(const synset& synset1, const synset& synset2) const
   {
     vertex v1 = synset1.id;
     vertex v2 = synset2.id;
@@ -130,7 +130,7 @@ namespace wnb
 
 
   float
-  nltk_similarity::operator()(const synset& synset1, const synset& synset2, int)
+  nltk_similarity::operator()(const synset& synset1, const synset& synset2, int) const
   {
     int distance = shortest_path_distance(synset1, synset2);
     if (distance >= 0)

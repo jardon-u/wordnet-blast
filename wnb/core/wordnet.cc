@@ -34,7 +34,7 @@ namespace wnb
   }
 
   std::vector<synset>
-  wordnet::get_synsets(const std::string& word, pos_t pos)
+  wordnet::get_synsets(const std::string& word, pos_t pos) const
   {
     std::vector<synset> synsets;
 
@@ -45,9 +45,9 @@ namespace wnb
 
     // binary_search
     typedef std::vector<index> vi;
-    std::pair<vi::iterator,vi::iterator> bounds = get_indexes(mword);
+	std::pair<vi::const_iterator, vi::const_iterator> bounds = get_indexes(mword);
 
-    vi::iterator it;
+	vi::const_iterator it;
     for (it = bounds.first; it != bounds.second; it++)
     {
       if (pos == pos_t::UNKNOWN || it->pos == pos)
@@ -63,21 +63,21 @@ namespace wnb
     return synsets;
   }
 
-  std::pair<std::vector<index>::iterator, std::vector<index>::iterator>
-  wordnet::get_indexes(const std::string& word)
+  std::pair<std::vector<index>::const_iterator, std::vector<index>::const_iterator>
+  wordnet::get_indexes(const std::string& word) const
   {
     index light_index;
     light_index.lemma = word;
 
     typedef std::vector<index> vi;
-    std::pair<vi::iterator,vi::iterator> bounds =
+	std::pair<vi::const_iterator, vi::const_iterator> bounds =
       std::equal_range(index_list.begin(), index_list.end(), light_index);
 
     return bounds;
   }
 
   std::string
-  wordnet::wordbase(const std::string& word, int ender)
+  wordnet::wordbase(const std::string& word, int ender) const
   {
     if (ext::ends_with(word, info.sufx[ender]))
     {
@@ -100,12 +100,15 @@ namespace wnb
 
   // Try to find baseform (lemma) of individual word in POS
   std::string
-  wordnet::morphword(const std::string& word, pos_t pos)
+  wordnet::morphword(const std::string& word, pos_t pos) const
   {
     // first look for word on exception list
-    exc_t::iterator it = exc[pos].find(word);
-    if (it != exc[pos].end())
-      return it->second; // found in exception list
+	std::map<pos_t, exc_t>::const_iterator it_pos = exc.find(pos);
+	if (it_pos != exc.end()) {
+		exc_t::const_iterator it = it_pos->second.find(word);
+		if (it != it_pos->second.end())
+			return it->second; // found in exception list
+	}
 
     std::string tmpbuf;
     std::string end;
