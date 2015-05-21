@@ -66,21 +66,21 @@ namespace wnb
     "", "", "e", "e"
   };
 
-  const int info_helper::offsets[info_helper::NUMPARTS] = { 0, 0, 8, 16 };
-  const int info_helper::cnts[info_helper::NUMPARTS]    = { 0, 8, 8, 4 };
+  const int info_helper::offsets[info_helper::NUMPARTS] = { 0, 0, 8, 16, 0, 0 };
+  const int info_helper::cnts[info_helper::NUMPARTS]    = { 0, 8, 8, 4, 0, 0 };
 
   void
   info_helper::update_pos_maps()
   {
     // http://wordnet.princeton.edu/wordnet/man/wndb.5WN.html#sect3
 
-    indice_offset[0] = 0; // dummy
+    indice_offset[UNKNOWN] = 0;
 
-    indice_offset[1] = 0; // N
-    indice_offset[2] = indice_offset[1] + pos_maps[N].size(); // V
-    indice_offset[3] = indice_offset[2] + pos_maps[V].size(); // A
-    indice_offset[4] = indice_offset[3] + pos_maps[A].size(); // R
-    indice_offset[5] = indice_offset[4] + pos_maps[S].size(); // S
+    indice_offset[N] = 0;
+    indice_offset[V] = indice_offset[N] + pos_maps[N].size();
+    indice_offset[A] = indice_offset[V] + pos_maps[V].size();
+    indice_offset[R] = indice_offset[A] + pos_maps[A].size();
+    indice_offset[S] = indice_offset[R] + pos_maps[R].size();
 
   }
 

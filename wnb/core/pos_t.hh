@@ -9,12 +9,12 @@ namespace wnb
 
   enum pos_t
   	{
-   		UNKNOWN = 0,
-    	N       = 1,
-    	V       = 2,
-    	A       = 3,
-    	R       = 4,
-    	S     	= 5,
+        UNKNOWN = 0,
+        N       = 1,
+        V       = 2,
+        A       = 3,
+        R       = 4,
+        S       = 5,
   	};
 
 
@@ -28,6 +28,8 @@ namespace wnb
       return R;
     if (pos == "verb")
       return V;
+    if (pos == "adj sat")
+      return S;
     return UNKNOWN;
   }
 
@@ -39,7 +41,21 @@ namespace wnb
     case N: return "noun";
     case R: return "adv";
     case V: return "verb";
+    case S: return "adj sat";
     default: return "UNKNOWN";
+    }
+  }
+
+  inline pos_t get_pos_from_char(const char& c)
+  {
+    switch (c)
+    {
+    case 'a': return A;
+    case 'n': return N;
+    case 'r': return R;
+    case 'v': return V;
+    case 's': return S;
+    default: return UNKNOWN;
     }
   }
 

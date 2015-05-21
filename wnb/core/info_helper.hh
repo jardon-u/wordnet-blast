@@ -15,7 +15,7 @@ namespace wnb
   {
     /// Symbols' size
     static const std::size_t NB_SYMBOLS = 27;
-    static const std::size_t NUMPARTS = 4;
+    static const std::size_t NUMPARTS = POS_ARRAY_SIZE;
 
     /// List of pointer symbols
     static const char *      symbols[NB_SYMBOLS];
@@ -64,15 +64,9 @@ namespace wnb
       throw std::runtime_error("Symbol NOT FOUND.");
     }
 
-    //FIXME: use a hardcoded switch
-    pos_t get_pos(char c)
+    pos_t get_pos(const char& c)
     {
-      unsigned i = 0;
-
-      for (i = 0;  i < POS_ARRAY_SIZE; i++)
-        if (c == POS_ARRAY[i])
-          return pos_t(i);
-      throw std::runtime_error(std::string("pos ") + c + " NOT FOUND.");
+      return get_pos_from_char(c);
     }
 
   public:
@@ -83,7 +77,7 @@ namespace wnb
     // i2of_t verb_map;
 
     pos_i2of_t  pos_maps;
-    std::size_t indice_offset[5];
+    std::size_t indice_offset[POS_ARRAY_SIZE];
   };
 
   /// Create a new info_help based on wordnet data located in dn (../dict/)

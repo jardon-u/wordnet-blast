@@ -8,6 +8,7 @@ In memory access to the wordnet onthology.
 DEPENDENCIES:
         boost 1.46
         wordnet-sense-index
+        colordiff (for wntest)
 
 INSTALL:
         cmake CMakeLists.txt
