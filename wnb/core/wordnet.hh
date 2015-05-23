@@ -78,7 +78,7 @@ namespace wnb
   struct wordnet
   {
     typedef boost::adjacency_list<boost::vecS, boost::vecS,
-                                  boost::directedS,
+                                  boost::bidirectionalS,
                                   synset, ptr> graph; ///< boost graph type
 
     /// Constructor
