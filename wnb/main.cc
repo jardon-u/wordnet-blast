@@ -23,7 +23,7 @@ bool usage(int argc, char ** argv)
     dir = std::string(argv[1]);
   if (argc != 3 || dir[dir.length()-1] != '/')
   {
-    std::cout << argv[0] << " .../wordnet_dir/ word_list_file" << std::endl;
+    std::cout << argv[0] << " ../data/wordnet3.1/dict/ word_list_file" << std::endl;
     return true;
   }
   return false;
@@ -169,7 +169,7 @@ int main(int argc, char ** argv)
   std::string wordnet_dir = argv[1];
   std::string test_file   = argv[2];
 
-  wordnet wn(wordnet_dir);
+  wordnet wn(wordnet_dir, true);
 
   // read test file
   std::string list = ext::read_file(test_file);
