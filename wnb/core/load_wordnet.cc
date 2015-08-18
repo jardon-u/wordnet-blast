@@ -142,33 +142,31 @@ namespace wnb
       wn.wordnet_graph[synset.id] = synset;
     }
 
-
-    // Parse data.noun files
-    void load_wordnet_data(const std::string& fn, wordnet& wn)
+    void work_wordnet_file(const std::string& file, std::function<void(const std::string&)>& row_action)
     {
-      std::ifstream fin(fn.c_str());
-      if (!fin.is_open())
-        throw std::runtime_error("File missing: " + fn);
+        std::ifstream fin(file.c_str());
+        if (!fin.is_open())
+            throw std::runtime_error("File missing: " + file);
 
-      std::string row;
+        std::string row;
 
-      //skip header
-      std::size_t lineno = 1;
-      auto is_header_func = [&lineno](std::string& row){
-          // "Each data file begins with several lines containing a copyright notice,
-          //  version number and license agreement. These lines all begin with two 
-          //  spaces and the line number"
-          //                  http://wordnet.princeton.edu/wordnet/man/wndb.5WN.html
-          return std::atoi(row.substr(0, 3 + (lineno > 9 ? 1 : 0)).c_str()) == lineno++;
-      };
-      while (std::getline(fin, row) && is_header_func(row)) continue;
+        //skip header
+        std::size_t lineno = 1;
+        auto is_header_func = [&lineno](std::string& row){
+            // "Each data file begins with several lines containing a copyright notice,
+            //  version number and license agreement. These lines all begin with two 
+            //  spaces and the line number"
+            //                  http://wordnet.princeton.edu/wordnet/man/wndb.5WN.html
+            return std::atoi(row.substr(0, 3 + (lineno > 9 ? 1 : 0)).c_str()) == lineno++;
+        };
+        while (std::getline(fin, row) && is_header_func(row)) continue;
 
-      //parse data line    
-      do {
-          load_data_row(row, wn);
-      } while (std::getline(fin, row));
+        //parse data line    
+        do {
+            row_action(row);
+        } while (std::getline(fin, row));
 
-      fin.close();
+        fin.close();
     }
 
 
@@ -206,49 +204,38 @@ namespace wnb
       wn.index_list.push_back(index);
     }
 
-
-    void load_wordnet_index(const std::string& fn, wordnet& wn)
+    // Parse data.<pos> files
+    void load_wordnet_data(const std::string& fn, wordnet& wn)
     {
-      std::ifstream fin(fn.c_str());
-      if (!fin.is_open())
-        throw std::runtime_error("File Not Found: " + fn);
-
-      static const int MAX_LENGTH = 20480;
-      char row[MAX_LENGTH];
-
-      //skip header
-      const unsigned int header_nb_lines = 29;
-      for(std::size_t i = 0; i < header_nb_lines; i++)
-        fin.getline(row, MAX_LENGTH);
-
-      //parse data line
-      while (fin.getline(row, MAX_LENGTH))
-        load_index_row(row, wn);
-
-      fin.close();
+        std::function<void(const std::string&)> action = [&wn](const std::string& row) {
+            load_data_row(row, wn);
+        };
+        work_wordnet_file(fn, action);
     }
 
+    // Parse index.<pos> files
+    void load_wordnet_index(const std::string& fn, wordnet& wn)
+    {
+      std::function<void(const std::string&)> action = [&wn](const std::string& row) {
+        load_index_row(row, wn);
+      };
+      work_wordnet_file(fn, action);
+    }
 
+    // Parse <pos>.exc files
     void load_wordnet_exc(const std::string& dn, std::string cat, wordnet& wn)
     {
-      std::string fn = dn + cat + ".exc";
-      std::ifstream fin(fn.c_str());
-      if (!fin.is_open())
-        throw std::runtime_error("File Not Found: " + fn);
-
-      std::map<std::string,std::string>& exc = wn.exc[get_pos_from_name(cat)];
-
-      std::string row;
-
-      std::string key, value;
-      while (std::getline(fin, row))
-      {
+      std::map<std::string, std::string>& exc = wn.exc[get_pos_from_name(cat)];
+      std::function<void(const std::string&)> action = [&wn, &exc](const std::string& row) {        
         std::stringstream srow(row);
+        std::string key, value;
         srow >> key;
         srow >> value;
 
         exc[key] = value;
-      }
+      };
+      std::string fn = dn + cat + ".exc";
+      work_wordnet_file(fn, action);
     }
 
     void load_wordnet_cat(const std::string dn, std::string cat,
