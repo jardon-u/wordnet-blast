@@ -238,12 +238,15 @@ namespace wnb
       work_wordnet_file(fn, action);
     }
 
-    void load_wordnet_cat(const std::string dn, std::string cat,
-                          wordnet& wn)
+    void load_wordnet_cat(const std::string dn, std::string cat, wordnet& wn, 
+                          boost::progress_display& show_progress)
     {
       load_wordnet_data((dn + "data." + cat), wn);
+      ++show_progress;
       load_wordnet_index((dn + "index." + cat), wn);
+      ++show_progress;
       load_wordnet_exc(dn, cat, wn);
+      ++show_progress;
     }
 
     // FIXME: this file is not in all packaged version of wordnet
@@ -333,22 +336,20 @@ namespace wnb
   {
     std::cout << std::endl;
     std::cout << "### Loading Wordnet";
-    boost::progress_display show_progress(5);
-    boost::progress_timer t;
-    
-    load_wordnet_cat(dn, "adj", wn);
-    ++show_progress;
-    load_wordnet_cat(dn, "noun", wn);
-    ++show_progress;
-    load_wordnet_cat(dn, "adv", wn);
-    ++show_progress;
-    load_wordnet_cat(dn, "verb", wn);
-    ++show_progress;
+    boost::progress_display show_progress(14);
+
+    load_wordnet_cat(dn, "adj", wn, show_progress);
+    load_wordnet_cat(dn, "noun", wn, show_progress);
+    load_wordnet_cat(dn, "adv", wn, show_progress);
+    load_wordnet_cat(dn, "verb", wn, show_progress);
+
     load_wordnet_index_sense(dn, wn);
-    ++show_progress;
-    std::cout << std::endl;
-    
+    show_progress += 1;
+   
     std::stable_sort(wn.index_list.begin(), wn.index_list.end());
+    show_progress += 1;
+
+    std::cout << std::endl;
   }
 
 } // end of namespace wnb
