@@ -14,7 +14,6 @@
 #include <wnb/std_ext.hh>
 
 #include "wordnet.hh"
-#include "info_helper.hh"
 #include "pos_t.hh"
 
 namespace bg = boost::graph;
@@ -50,17 +49,16 @@ namespace wnb
                          int src,                     // word src
                          int trgt,                    // word target
                          synset& synset,              // source synset
-                         wordnet& wn,                 // our wordnet
-                         info_helper& info)           // helper
+                         wordnet& wn)                 // our wordnet
     {
       //if (pos == S || synset.pos == S)
       //  return; //FIXME: check where are s synsets.
 
       int u = synset.id;
-      int v = info.compute_indice(synset_offset, pos);
+      int v = wn.info.compute_indice(synset_offset, pos);
 
       ptr p;
-      p.pointer_symbol = info.get_symbol(pointer_symbol_);
+      p.pointer_symbol = wn.info.get_symbol(pointer_symbol_);
       p.source = src;
       p.target = trgt;
 
@@ -69,8 +67,7 @@ namespace wnb
 
 
     // load ptrs
-    void load_data_row_ptrs(std::stringstream& srow, synset& synset,
-                            wordnet& wn, info_helper& info)
+    void load_data_row_ptrs(std::stringstream& srow, synset& synset, wordnet& wn)
     {
       srow >> synset.p_cnt;
       for (std::size_t i = 0; i < synset.p_cnt; i++)
@@ -88,7 +85,7 @@ namespace wnb
 
         char c;
         srow >> c;
-        pos = info.get_pos(c);
+        pos = wn.info.get_pos(c);
 
         //print extracted edges
         //std::cout << "(" << pointer_symbol << ", " << synset_offset;
@@ -102,13 +99,13 @@ namespace wnb
         ssrc >> std::hex >> src >> std::dec;
         strgt >> std::hex >> trgt >> std::dec;
 
-        add_wordnet_rel(pointer_symbol_, synset_offset, pos, src, trgt, synset, wn, info);
+        add_wordnet_rel(pointer_symbol_, synset_offset, pos, src, trgt, synset, wn);
       }
     }
 
 
     // Load a synset and add it to the wordnet class.
-    void load_data_row(const std::string& row, wordnet& wn, info_helper& info)
+    void load_data_row(const std::string& row, wordnet& wn)
     {
       //http://wordnet.princeton.edu/wordnet/man/wndb.5WN.html#sect3
       // synset_offset lex_filenum ss_type w_cnt word lex_id [word lex_id...] p_cnt [ptr...] [frames...] | gloss
@@ -122,14 +119,14 @@ namespace wnb
       srow >> ss_type;
 
       // extra information
-      synset.pos = info.get_pos(ss_type);
-      synset.id  = info.compute_indice(synset_offset, synset.pos);
+      synset.pos = wn.info.get_pos(ss_type);
+      synset.id  = wn.info.compute_indice(synset_offset, synset.pos);
 
       // words
       load_data_row_words(srow, synset);
 
       // ptrs
-      load_data_row_ptrs(srow, synset, wn, info);
+      load_data_row_ptrs(srow, synset, wn);
 
       //frames (skipped)
       std::string tmp;
@@ -147,7 +144,7 @@ namespace wnb
 
 
     // Parse data.noun files
-    void load_wordnet_data(const std::string& fn, wordnet& wn, info_helper& info)
+    void load_wordnet_data(const std::string& fn, wordnet& wn)
     {
       std::ifstream fin(fn.c_str());
       if (!fin.is_open())
@@ -168,7 +165,7 @@ namespace wnb
 
       //parse data line    
       do {
-          load_data_row(row, wn, info);
+          load_data_row(row, wn);
       } while (std::getline(fin, row));
 
       fin.close();
@@ -176,7 +173,7 @@ namespace wnb
 
 
     //FIXME: It seems possible to replace synset_offsets with indice here.
-    void load_index_row(const std::string& row, wordnet& wn, info_helper& info)
+    void load_index_row(const std::string& row, wordnet& wn)
     {
       // lemma pos synset_cnt p_cnt [ptr_symbol...] sense_cnt tagsense_cnt synset_offset [synset_offset...]
       index index;
@@ -185,7 +182,7 @@ namespace wnb
       char pos;
       srow >> index.lemma;
       srow >> pos;
-      index.pos = info.get_pos(pos); // extra data
+      index.pos = wn.info.get_pos(pos); // extra data
       srow >> index.synset_cnt;
       srow >> index.p_cnt;
 
@@ -202,7 +199,7 @@ namespace wnb
       while (srow >> tmp_o)
       {
         index.synset_offsets.push_back(tmp_o);
-        index.synset_ids.push_back(info.compute_indice(tmp_o, index.pos)); // extra data
+        index.synset_ids.push_back(wn.info.compute_indice(tmp_o, index.pos)); // extra data
       }
 
       //add synset to index list
@@ -210,7 +207,7 @@ namespace wnb
     }
 
 
-    void load_wordnet_index(const std::string& fn, wordnet& wn, info_helper& info)
+    void load_wordnet_index(const std::string& fn, wordnet& wn)
     {
       std::ifstream fin(fn.c_str());
       if (!fin.is_open())
@@ -226,14 +223,13 @@ namespace wnb
 
       //parse data line
       while (fin.getline(row, MAX_LENGTH))
-        load_index_row(row, wn, info);
+        load_index_row(row, wn);
 
       fin.close();
     }
 
 
-    void load_wordnet_exc(const std::string& dn, std::string cat,
-                          wordnet& wn, info_helper&)
+    void load_wordnet_exc(const std::string& dn, std::string cat, wordnet& wn)
     {
       std::string fn = dn + cat + ".exc";
       std::ifstream fin(fn.c_str());
@@ -256,15 +252,15 @@ namespace wnb
     }
 
     void load_wordnet_cat(const std::string dn, std::string cat,
-                          wordnet& wn, info_helper& info)
+                          wordnet& wn)
     {
-      load_wordnet_data((dn + "data." + cat), wn, info);
-      load_wordnet_index((dn + "index." + cat), wn, info);
-      load_wordnet_exc(dn, cat, wn, info);
+      load_wordnet_data((dn + "data." + cat), wn);
+      load_wordnet_index((dn + "index." + cat), wn);
+      load_wordnet_exc(dn, cat, wn);
     }
 
     // FIXME: this file is not in all packaged version of wordnet
-    void load_wordnet_index_sense(const std::string& dn, wordnet& wn, info_helper& info)
+    void load_wordnet_index_sense(const std::string& dn, wordnet& wn)
     {
       std::string fn = dn + "index.sense";
       std::ifstream fin(fn.c_str());
@@ -290,7 +286,7 @@ namespace wnb
         srow >> synset_offset;
 
         // Update synset info
-        int u = info.compute_indice(synset_offset, pos);
+        int u = wn.info.compute_indice(synset_offset, pos);
         int sense_number;
         srow >> sense_number;
         wn.wordnet_graph[u].sense_number += sense_number;
@@ -308,7 +304,7 @@ namespace wnb
 
     // wn -over used info in cntlist even if this is deprecated
     // It is ok not to FIX and use this function
-    void load_wordnet_cntlist(const std::string& dn, wordnet& wn, info_helper& info)
+    void load_wordnet_cntlist(const std::string& dn, wordnet& wn)
     {
       std::string fn = dn + "cntlist";
       std::ifstream fin(fn.c_str());
@@ -337,7 +333,7 @@ namespace wnb
 
         // Update synset info
         int synset_offset; // FIXME
-        int u = info.compute_indice(synset_offset, pos);
+        int u = wn.info.compute_indice(synset_offset, pos);
         wn.wordnet_graph[u].sense_number += sense_number;
         if (tag_cnt != 0)
           wn.wordnet_graph[u].tag_cnts.push_back( make_pair(word,tag_cnt) );
@@ -346,7 +342,7 @@ namespace wnb
 
   } // end of anonymous namespace
 
-  void load_wordnet(const std::string& dn, wordnet& wn, info_helper& info)
+  void load_wordnet(const std::string& dn, wordnet& wn)
   {
     // vertex added in this order a n r v
 
@@ -359,25 +355,25 @@ namespace wnb
       boost::progress_display show_progress(5);
       boost::progress_timer t;
 
-      load_wordnet_cat(dn, "adj", wn, info);
+      load_wordnet_cat(dn, "adj", wn);
       ++show_progress;
-      load_wordnet_cat(dn, "noun", wn, info);
+      load_wordnet_cat(dn, "noun", wn);
       ++show_progress;
-      load_wordnet_cat(dn, "adv", wn, info);
+      load_wordnet_cat(dn, "adv", wn);
       ++show_progress;
-      load_wordnet_cat(dn, "verb", wn, info);
+      load_wordnet_cat(dn, "verb", wn);
       ++show_progress;
-      load_wordnet_index_sense(dn, wn, info);
+      load_wordnet_index_sense(dn, wn);
       ++show_progress;
       std::cout << std::endl;
     }
     else
     {
-      load_wordnet_cat(dn, "adj", wn, info);
-      load_wordnet_cat(dn, "noun", wn, info);
-      load_wordnet_cat(dn, "adv", wn, info);
-      load_wordnet_cat(dn, "verb", wn, info);
-      load_wordnet_index_sense(dn, wn, info);
+      load_wordnet_cat(dn, "adj", wn);
+      load_wordnet_cat(dn, "noun", wn);
+      load_wordnet_cat(dn, "adv", wn);
+      load_wordnet_cat(dn, "verb", wn);
+      load_wordnet_index_sense(dn, wn);
     }
 
     std::stable_sort(wn.index_list.begin(), wn.index_list.end());

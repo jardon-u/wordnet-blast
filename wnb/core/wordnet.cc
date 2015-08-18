@@ -25,7 +25,7 @@ namespace wnb
     preprocess_wordnet(wordnet_dir, info);
 
     wordnet_graph = graph(info.nb_synsets());
-    load_wordnet(wordnet_dir, *this, info);
+    load_wordnet(wordnet_dir, *this);
 
     if (_verbose)
     {
@@ -44,7 +44,7 @@ namespace wnb
       {
           std::cout << wordnet_dir << std::endl;
       }
-      load_wordnet(wordnet_dir, *this, info);
+      load_wordnet(wordnet_dir, *this);
       if (_verbose)
       {
           std::cout << "nb_synsets: " << info.nb_synsets() << std::endl;
