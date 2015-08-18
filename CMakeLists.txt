@@ -102,3 +102,20 @@ foreach(HEADER ${HEADERS})
    string(REGEX MATCH "(.*)[/\\]" DIR ${HEADER}) 
    install(FILES ${HEADER} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/${DIR}) 
 endforeach(HEADER HEADERS) 
+
+
+# Data
+#------------------------
+option(DOWNLOAD_WORDNET "Download WordNet 3.1" OFF)
+if(DOWNLOAD_WORDNET)
+    if(IS_DIRECTORY "${CMAKE_INSTALL_PREFIX}/data/wordnet3.1")
+              message(STATUS "WordNet 3.1 is already on disk")
+    else()
+              message(STATUS "Downloading WordNet 3.1 database to ${CMAKE_INSTALL_PREFIX}/data/wordnet3.1")
+              file(DOWNLOAD http://wordnetcode.princeton.edu/wn3.1.dict.tar.gz ${CMAKE_INSTALL_PREFIX}/data/wordnet3.1/wn3.1.dict.tar.gz                            SHOW_PROGRESS)
+
+              message(STATUS "Uncompressing database...")
+              execute_process(COMMAND ${CMAKE_COMMAND} -E tar xvzf ${CMAKE_INSTALL_PREFIX}/data/wordnet3.1/wn3.1.dict.tar.gz
+                            WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}/data/wordnet3.1)
+    endif()
+endif()
