@@ -338,10 +338,9 @@ namespace wnb
     std::cout << "### Loading Wordnet";
     boost::progress_display show_progress(14);
 
-    load_wordnet_cat(dn, "adj", wn, show_progress);
-    load_wordnet_cat(dn, "noun", wn, show_progress);
-    load_wordnet_cat(dn, "adv", wn, show_progress);
-    load_wordnet_cat(dn, "verb", wn, show_progress);
+    for (auto &item : { "adj", "noun", "adv", "verb" }) {
+        load_wordnet_cat(dn, item, wn, show_progress);
+    }
 
     load_wordnet_index_sense(dn, wn);
     show_progress += 1;
