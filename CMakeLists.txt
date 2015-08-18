@@ -5,12 +5,18 @@ PROJECT(wnb)
 # Boost dependency
 #--------------------------------------------------
 
-IF (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-  SET (BOOST_ROOT /Developer/boost_build/) # Suggested path
-ELSE()
-  SET (BOOST_ROOT "/usr/include")
+IF (NOT DEFINED BOOST_ROOT)
+    IF (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+      SET (BOOST_ROOT /Developer/boost_build/) # Suggested path
+    ELSE()
+      SET (BOOST_ROOT "/usr/include")
+    ENDIF()
 ENDIF()
-MESSAGE(STATUS "** Search Boost root: ${BOOST_ROOT}")
+IF (NOT DEFINED BOOST_LIBRARYDIR)
+    set(BOOST_LIBRARYDIR "${BOOST_ROOT}/lib")
+ENDIF()
+MESSAGE(STATUS "** Search Boost prefix (BOOST_ROOT): ${BOOST_ROOT}")
+MESSAGE(STATUS "** Search Boost libraries (BOOST_LIBRARYDIR): ${BOOST_LIBRARYDIR}")
 FIND_PACKAGE(Boost COMPONENTS graph REQUIRED)
 MESSAGE(STATUS "** Boost Include: ${Boost_INCLUDE_DIR}")
 MESSAGE(STATUS "** Boost Libraries: ${Boost_LIBRARY_DIRS}")
