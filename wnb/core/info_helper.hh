@@ -29,20 +29,10 @@ namespace wnb
     typedef std::map<pos_t, i2of_t> pos_i2of_t; ///< pos / map  correspondences
 
     /// Constructor
-    info_helper() { update_pos_maps(); }
+    info_helper() { }
 
     /// Compute the number of synsets (i.e. the number of vertex in the graph)
-    unsigned nb_synsets()
-    {
-      typedef pos_i2of_t::iterator iter_t;
-
-      int sum = 0;
-      for (iter_t it = pos_maps.begin(); it != pos_maps.end(); it++)
-        sum += (*it).second.size();
-
-      return sum;
-      //return adj_map.size() + adv_map.size() + noun_map.size() + verb_map.size();
-    };
+    std::size_t nb_synsets() const;
 
     // Given a pos return the starting indice in the graph
     int get_indice_offset(pos_t pos)
@@ -82,6 +72,7 @@ namespace wnb
 
   /// Create a new info_help based on wordnet data located in dn (../dict/)
   info_helper preprocess_wordnet(const std::string& dn);
+  void preprocess_wordnet(const std::string& dn, info_helper& info);
 
 } // end of namespace wncpp
 

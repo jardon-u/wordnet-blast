@@ -69,6 +69,17 @@ namespace wnb
   const int info_helper::offsets[info_helper::NUMPARTS] = { 0, 0, 8, 16, 0, 0 };
   const int info_helper::cnts[info_helper::NUMPARTS]    = { 0, 8, 8, 4, 0, 0 };
 
+  std::size_t
+  info_helper::nb_synsets() const
+  {
+      std::size_t sum = 0;
+      for (auto &m : pos_maps) {
+          sum += m.second.size();
+      }
+      return sum;
+      //return adj_map.size() + adv_map.size() + noun_map.size() + verb_map.size();
+  };
+
   void
   info_helper::update_pos_maps()
   {
@@ -110,20 +121,26 @@ namespace wnb
     std::string row;
 
     //skip header
-    const unsigned int header_nb_lines = 29;
-    for(std::size_t i = 0; i < header_nb_lines; i++)
-      std::getline(file, row);
+    std::size_t lineno = 1;
+    auto is_header_func = [&lineno](std::string& row){
+        // "Each data file begins with several lines containing a copyright notice,
+        //  version number and license agreement. These lines all begin with two 
+        //  spaces and the line number"
+        //                  http://wordnet.princeton.edu/wordnet/man/wndb.5WN.html
+        return std::atoi(row.substr(0, 3 + (lineno > 9 ? 1 : 0)).c_str()) == lineno++;
+    };
 
+    while (std::getline(file, row) && is_header_func(row)) continue;
+
+    //parse data line    
     int ind = 0;
-    //parse data line
-    while (std::getline(file, row))
-    {
-      std::stringstream srow(row);
-      int offset;
-      srow >> offset;
-      map.insert(std::pair<int,int>(offset, ind));
-      ind++;
-    }
+    do {
+        std::stringstream srow(row);
+        int offset;
+        srow >> offset;
+        map.insert(std::pair<int, int>(offset, ind));
+        ind++;
+    } while (std::getline(file, row));
 
     file.close();
     return map;
@@ -133,15 +150,19 @@ namespace wnb
   preprocess_wordnet(const std::string& dn)
   {
     info_helper info;
-
-    info.pos_maps[N] = preprocess_data((dn + "data.noun")); // noun_map
-    info.pos_maps[V] = preprocess_data((dn + "data.verb")); // verb_map
-    info.pos_maps[A] = preprocess_data((dn + "data.adj"));  // adj_map
-    info.pos_maps[R] = preprocess_data((dn + "data.adv"));  // adv_map
-
-    info.update_pos_maps();
-
+    preprocess_wordnet(dn, info);
     return info;
+  }
+
+  void
+  preprocess_wordnet(const std::string& dn, info_helper& info)
+  {
+      info.pos_maps[N] = preprocess_data((dn + "data.noun")); // noun_map
+      info.pos_maps[V] = preprocess_data((dn + "data.verb")); // verb_map
+      info.pos_maps[A] = preprocess_data((dn + "data.adj"));  // adj_map
+      info.pos_maps[R] = preprocess_data((dn + "data.adv"));  // adv_map
+
+      info.update_pos_maps();
   }
 
 } // end of namespace wnb
