@@ -35,6 +35,22 @@ namespace wnb
     //assert(info.nb_synsets() == 142335);//117659);
   }
 
+  wordnet::wordnet(const std::string& wordnet_dir, const info_helper& info_, bool verbose)
+      : _verbose(verbose),
+        info(info_),
+        wordnet_graph(info_.nb_synsets())
+  {
+      if (_verbose)
+      {
+          std::cout << wordnet_dir << std::endl;
+      }
+      load_wordnet(wordnet_dir, *this, info);
+      if (_verbose)
+      {
+          std::cout << "nb_synsets: " << info.nb_synsets() << std::endl;
+      }
+  }
+
   std::vector<synset>
   wordnet::get_synsets(const std::string& word, pos_t pos) const
   {

@@ -81,7 +81,8 @@ namespace wnb
                                   synset, ptr> graph; ///< boost graph type
 
     /// Constructor
-    wordnet(const std::string& wordnet_dir, bool verbose=false);
+    wordnet(const std::string& wordnet_dir, bool verbose = false);
+    wordnet(const std::string& wordnet_dir, const info_helper& info, bool verbose = false);
 
     /// Return synsets matching word
     std::vector<synset> get_synsets(const std::string& word, pos_t pos = pos_t::UNKNOWN) const;

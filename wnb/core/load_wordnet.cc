@@ -133,9 +133,7 @@ namespace wnb
 
       //frames (skipped)
       std::string tmp;
-      while (srow >> tmp)
-        if (tmp == "|")
-          break;
+      std::getline(srow, tmp, '|');
 
       // gloss
       std::getline(srow, synset.gloss);

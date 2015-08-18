@@ -169,7 +169,9 @@ int main(int argc, char ** argv)
   std::string wordnet_dir = argv[1];
   std::string test_file   = argv[2];
 
-  wordnet wn(wordnet_dir, true);
+  info_helper info;
+  preprocess_wordnet(wordnet_dir, info);
+  wordnet wn(wordnet_dir, info, true);
 
   // read test file
   std::string list = ext::read_file(test_file);
