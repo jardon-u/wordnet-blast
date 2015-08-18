@@ -153,16 +153,23 @@ namespace wnb
       if (!fin.is_open())
         throw std::runtime_error("File missing: " + fn);
 
-      static const int MAX_LENGTH = 20480;
-      char row[MAX_LENGTH];
+      std::string row;
 
       //skip header
-      for(unsigned i = 0; i < 29; i++)
-        fin.getline(row, MAX_LENGTH);
+      std::size_t lineno = 1;
+      auto is_header_func = [&lineno](std::string& row){
+          // "Each data file begins with several lines containing a copyright notice,
+          //  version number and license agreement. These lines all begin with two 
+          //  spaces and the line number"
+          //                  http://wordnet.princeton.edu/wordnet/man/wndb.5WN.html
+          return std::atoi(row.substr(0, 3 + (lineno > 9 ? 1 : 0)).c_str()) == lineno++;
+      };
+      while (std::getline(fin, row) && is_header_func(row)) continue;
 
-      //parse data line
-      while (fin.getline(row, MAX_LENGTH))
-        load_data_row(row, wn, info);
+      //parse data line    
+      do {
+          load_data_row(row, wn, info);
+      } while (std::getline(fin, row));
 
       fin.close();
     }
