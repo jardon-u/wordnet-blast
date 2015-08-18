@@ -11,7 +11,6 @@
 # include <boost/graph/graph_traits.hpp>
 # include <boost/graph/adjacency_list.hpp>
 
-# include "load_wordnet.hh"
 # include "pos_t.hh"
 # include "info_helper.hh"
 

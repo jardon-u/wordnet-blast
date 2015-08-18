@@ -8,6 +8,8 @@
 #include <boost/graph/breadth_first_search.hpp>
 #include <boost/graph/filtered_graph.hpp>
 
+# include "load_wordnet.hh"
+
 namespace wnb
 {
 
@@ -20,7 +22,7 @@ namespace wnb
       std::cout << wordnet_dir << std::endl;
     }
 
-    info = preprocess_wordnet(wordnet_dir);
+    preprocess_wordnet(wordnet_dir, info);
 
     wordnet_graph = graph(info.nb_synsets());
     load_wordnet(wordnet_dir, *this, info);
