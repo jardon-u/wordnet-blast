@@ -331,38 +331,23 @@ namespace wnb
 
   void load_wordnet(const std::string& dn, wordnet& wn)
   {
-    // vertex added in this order a n r v
-
-    std::string fn = dn;
-
-    if (wn._verbose)
-    {
-      std::cout << std::endl;
-      std::cout << "### Loading Wordnet 3.0";
-      boost::progress_display show_progress(5);
-      boost::progress_timer t;
-
-      load_wordnet_cat(dn, "adj", wn);
-      ++show_progress;
-      load_wordnet_cat(dn, "noun", wn);
-      ++show_progress;
-      load_wordnet_cat(dn, "adv", wn);
-      ++show_progress;
-      load_wordnet_cat(dn, "verb", wn);
-      ++show_progress;
-      load_wordnet_index_sense(dn, wn);
-      ++show_progress;
-      std::cout << std::endl;
-    }
-    else
-    {
-      load_wordnet_cat(dn, "adj", wn);
-      load_wordnet_cat(dn, "noun", wn);
-      load_wordnet_cat(dn, "adv", wn);
-      load_wordnet_cat(dn, "verb", wn);
-      load_wordnet_index_sense(dn, wn);
-    }
-
+    std::cout << std::endl;
+    std::cout << "### Loading Wordnet";
+    boost::progress_display show_progress(5);
+    boost::progress_timer t;
+    
+    load_wordnet_cat(dn, "adj", wn);
+    ++show_progress;
+    load_wordnet_cat(dn, "noun", wn);
+    ++show_progress;
+    load_wordnet_cat(dn, "adv", wn);
+    ++show_progress;
+    load_wordnet_cat(dn, "verb", wn);
+    ++show_progress;
+    load_wordnet_index_sense(dn, wn);
+    ++show_progress;
+    std::cout << std::endl;
+    
     std::stable_sort(wn.index_list.begin(), wn.index_list.end());
   }
 

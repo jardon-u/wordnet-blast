@@ -7,6 +7,8 @@
 #include <stdexcept>
 #include <boost/graph/breadth_first_search.hpp>
 #include <boost/graph/filtered_graph.hpp>
+#include "boost/iostreams/stream.hpp"
+#include "boost/iostreams/device/null.hpp"
 
 # include "load_wordnet.hh"
 
@@ -40,14 +42,16 @@ namespace wnb
         info(info_),
         wordnet_graph(info_.nb_synsets())
   {
-      if (_verbose)
-      {
-          std::cout << wordnet_dir << std::endl;
+      auto oldbuf = std::cout.rdbuf();
+      boost::iostreams::stream_buffer< boost::iostreams::null_sink > null_buff{ boost::iostreams::null_sink() };
+      if (!_verbose) {
+          std::cout.rdbuf(&null_buff);
       }
+      std::cout << wordnet_dir << std::endl;
       load_wordnet(wordnet_dir, *this);
-      if (_verbose)
-      {
-          std::cout << "nb_synsets: " << info.nb_synsets() << std::endl;
+      std::cout << "nb_synsets: " << info.nb_synsets() << std::endl;
+      if (!_verbose) {
+          std::cout.rdbuf(oldbuf);
       }
   }
 
