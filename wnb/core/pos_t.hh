@@ -46,7 +46,7 @@ namespace wnb
       return pos_t::UNKNOWN;
   }
 
-} // end of namespace wncpp
+} // end of namespace wnb
 
 
 #endif /* _POS_T_HH */
