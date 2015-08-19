@@ -1,5 +1,3 @@
-#include <wnb/core/wordnet.hh>
-#include <wnb/std_ext.hh>
 
 #include <string>
 #include <set>
@@ -10,6 +8,8 @@
 #include "boost/iostreams/stream.hpp"
 #include "boost/iostreams/device/null.hpp"
 
+#include "wordnet.hh"
+#include "../std_ext.hh"
 # include "load_wordnet.hh"
 
 namespace wnb

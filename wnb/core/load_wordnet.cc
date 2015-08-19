@@ -11,8 +11,7 @@
 #include <boost/progress.hpp>
 #include <boost/algorithm/string.hpp>
 
-#include <wnb/std_ext.hh>
-
+#include "../std_ext.hh"
 #include "wordnet.hh"
 #include "pos_t.hh"
 
@@ -259,7 +258,7 @@ namespace wnb
 
       std::string row;
       std::string sense_key;
-      int synset_offset;
+      std::size_t synset_offset;
       while (std::getline(fin, row))
       {
         std::stringstream srow(row);

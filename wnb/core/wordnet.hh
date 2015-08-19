@@ -33,7 +33,7 @@ namespace wnb
     pos_t pos;        ///< pos (replace ss_type)
     std::size_t id;           ///< unique identifier (replace synset_offset)
     std::size_t sense_number; ///< http://wordnet.princeton.edu/man/senseidx.5WN.html
-    std::vector<std::pair<std::string, int> > tag_cnts; ///< http://wordnet.princeton.edu/man/senseidx.5WN.html
+    std::vector<std::pair<std::string, std::size_t> > tag_cnts; ///< http://wordnet.princeton.edu/man/senseidx.5WN.html
 
     bool operator==(const synset& s) const { return (id == s.id);  }
     bool operator<(const synset& s) const { return (id < s.id);   }

@@ -22,14 +22,10 @@ MESSAGE(STATUS "** Boost Include: ${Boost_INCLUDE_DIR}")
 MESSAGE(STATUS "** Boost Libraries: ${Boost_LIBRARY_DIRS}")
 MESSAGE(STATUS "** Boost Libraries: ${Boost_LIBRARIES}")
 
-INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
-LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
 
 # Project
 #--------------------------------------------------
 ADD_DEFINITIONS(-D_UNICODE -DUNICODE)
-LINK_DIRECTORIES(${wnb_SOURCE_DIR}/lib)
-INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR} ${PROJECT_SOURCE_DIR})
 
 SET(PROJECT_VERSION "0.6")
 SET(ARCHIVE_NAME ${CMAKE_PROJECT_NAME}-${PROJECT_VERSION})
@@ -56,27 +52,26 @@ SET(WNB_SRCS wnb/core/wordnet.cc
 			 wnb/core/load_wordnet.hh
 			 wnb/core/info_helper.hh
 			 wnb/core/pos_t.hh
+             wnb/std_ext.hh
 			 )
-
-# Executable
-#--------------------------------------------------
-ADD_EXECUTABLE (wntest wnb/main.cc ${WNB_SRCS})
-SET(EXECUTABLE_OUTPUT_PATH ${wnb_BINARY_DIR}/bin)
 
 # Static library
 #--------------------------------------------------
 ADD_LIBRARY(wnb ${WNB_SRCS})
-SET(LIBRARY_OUTPUT_PATH ${wnb_BINARY_DIR}/lib)
+TARGET_INCLUDE_DIRECTORIES(wnb PUBLIC ${Boost_INCLUDE_DIR})
+TARGET_LINK_LIBRARIES(wnb ${Boost_LIBRARIES})
+SET_TARGET_PROPERTIES(wnb PROPERTIES DEBUG_POSTFIX d)
 
-IF (Boost_FOUND)
-  TARGET_LINK_LIBRARIES(wntest ${Boost_LIBRARIES})
-  TARGET_LINK_LIBRARIES(wnb ${Boost_LIBRARIES})
-ENDIF()
+# Executable
+#--------------------------------------------------
+ADD_EXECUTABLE (wntest wnb/main.cc)
+TARGET_INCLUDE_DIRECTORIES(wntest PUBLIC ${PROJECT_SOURCE_DIR})
+TARGET_LINK_LIBRARIES(wntest wnb)
+SET_TARGET_PROPERTIES(wntest PROPERTIES DEBUG_POSTFIX d)
 
 # Install targets
 #--------------------------------------------------
 # Applying workaround to preserve hierarchy of include files (see http://cmake.3232098.n2.nabble.com/Install-header-directory-hierarchy-td5638507.html)
-set_target_properties(wnb PROPERTIES DEBUG_POSTFIX d)
 set(HEADERS   wnb/core/info_helper.hh
               wnb/core/wordnet.hh
               wnb/core/pos_t.hh

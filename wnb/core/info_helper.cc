@@ -98,7 +98,8 @@ namespace wnb
   std::size_t info_helper::compute_indice(std::size_t offset, pos_t pos) const
   {
     if (pos == S) { pos = A; }
-    return indice_offset[pos] + pos_maps[pos][offset];
+    auto map = pos_maps.at(pos);
+    return indice_offset[pos] + map.at(offset);
   }
 
   // Function definitions
