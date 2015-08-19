@@ -335,7 +335,7 @@ namespace wnb
   {
     std::cout << std::endl;
     std::cout << "### Loading Wordnet";
-    boost::progress_display show_progress(14);
+    boost::progress_display show_progress(13);
 
     std::ios_base::sync_with_stdio(false);
     for (auto &item : { "adj", "noun", "adv", "verb" }) {
@@ -346,9 +346,6 @@ namespace wnb
     load_wordnet_index_sense(dn, wn);
     show_progress += 1;
    
-    std::stable_sort(wn.index_list.begin(), wn.index_list.end());
-    show_progress += 1;
-
     std::cout << std::endl;
   }
 

@@ -65,12 +65,7 @@ namespace wnb
 
     // extra
     std::vector<std::size_t> synset_ids;
-    pos_t pos;
-
-    bool operator<(const index& b) const
-    {
-      return (lemma.compare(b.lemma) < 0);
-    }
+    pos_t pos;    
   };
 
 

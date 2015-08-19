@@ -10,32 +10,42 @@
 
 #include "wordnet.hh"
 #include "std_ext.hh"
-# include "load_wordnet.hh"
+#include "load_wordnet.hh"
 
 namespace wnb
 {
+    namespace {
+        bool index_compare(const index& lhs, const index& rhs)
+        {
+            return (lhs.lemma.compare(rhs.lemma) < 0);
+        }
+    }
+
 
   //FIXME: Make (smart) use of fs::path
   wordnet::wordnet(const std::string& wordnet_dir, bool verbose)
     : _verbose(verbose)
   {
-    if (_verbose)
-    {
-      std::cout << wordnet_dir << std::endl;
+    auto oldbuf = std::cout.rdbuf();
+    boost::iostreams::stream_buffer< boost::iostreams::null_sink > null_buff{ boost::iostreams::null_sink() };
+    if (!_verbose) {
+        std::cout.rdbuf(&null_buff);
     }
+    std::cout << wordnet_dir << std::endl;
 
     preprocess_wordnet(wordnet_dir, info);
-
     wordnet_graph = graph(info.nb_synsets());
     load_wordnet(wordnet_dir, *this);
+    std::stable_sort(index_list.begin(), index_list.end(), index_compare);
 
-    if (_verbose)
-    {
-      std::cout << "nb_synsets: " << info.nb_synsets() << std::endl;
+    std::cout << "nb_synsets: " << info.nb_synsets() << std::endl;
+    if (!_verbose) {
+        std::cout.rdbuf(oldbuf);
     }
     //FIXME: this check is only valid for Wordnet 3.0
     //assert(info.nb_synsets() == 142335);//117659);
   }
+  
 
   wordnet::wordnet(const std::string& wordnet_dir, const info_helper& info_, bool verbose)
       : _verbose(verbose),
@@ -48,7 +58,10 @@ namespace wnb
           std::cout.rdbuf(&null_buff);
       }
       std::cout << wordnet_dir << std::endl;
+
       load_wordnet(wordnet_dir, *this);
+      std::stable_sort(index_list.begin(), index_list.end(), index_compare);
+
       std::cout << "nb_synsets: " << info.nb_synsets() << std::endl;
       if (!_verbose) {
           std::cout.rdbuf(oldbuf);
@@ -93,7 +106,7 @@ namespace wnb
 
     typedef std::vector<index> vi;
 	std::pair<vi::const_iterator, vi::const_iterator> bounds =
-      std::equal_range(index_list.begin(), index_list.end(), light_index);
+    std::equal_range(index_list.begin(), index_list.end(), light_index, index_compare);
 
     return bounds;
   }
