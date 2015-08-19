@@ -74,24 +74,21 @@ ENDIF()
 
 # Install targets
 #--------------------------------------------------
-# Applying workaround to preserve hierarchy of include files (see http://cmake.3232098.n2.nabble.com/Install-header-directory-hierarchy-td5638507.html)
-set(HEADERS   wnb/core/info_helper.hh
-              wnb/core/wordnet.hh
-              wnb/core/pos_t.hh
-              wnb/core/load_wordnet.hh
-              wnb/core/std_ext.hh
-              wnb/utils/bfs.hh
-              wnb/utils/nltk_similarity.hh
-              ) 
-               
 install(TARGETS wnb
   RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" COMPONENT bin
   LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" COMPONENT shlib
   ARCHIVE DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" COMPONENT lib  
   PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_PREFIX}/include/wnb/core"
   COMPONENT wnb)
+
   
-  
+# Applying workaround to preserve hierarchy of include files (see http://cmake.3232098.n2.nabble.com/Install-header-directory-hierarchy-td5638507.html)
+set(HEADERS   wnb/core/load_wordnet.hh
+              wnb/core/std_ext.hh
+              wnb/utils/bfs.hh
+              wnb/utils/nltk_similarity.hh
+              ) 
+               
 foreach(HEADER ${HEADERS}) 
    string(REGEX MATCH "(.*)[/\\]" DIR ${HEADER}) 
    install(FILES ${HEADER} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/${DIR}) 
