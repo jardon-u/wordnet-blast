@@ -84,7 +84,7 @@ namespace wnb
 
         char c;
         srow >> c;
-        pos = wn.info.get_pos(c);
+        pos = get_pos_from_char(c);
 
         //print extracted edges
         //std::cout << "(" << pointer_symbol << ", " << synset_offset;
@@ -118,7 +118,7 @@ namespace wnb
       srow >> ss_type;
 
       // extra information
-      synset.pos = wn.info.get_pos(ss_type);
+      synset.pos = get_pos_from_char(ss_type);
       synset.id  = wn.info.compute_indice(synset_offset, synset.pos);
 
       // words
@@ -179,7 +179,7 @@ namespace wnb
       char pos;
       srow >> index.lemma;
       srow >> pos;
-      index.pos = wn.info.get_pos(pos); // extra data
+      index.pos = get_pos_from_char(pos); // extra data
       srow >> index.synset_cnt;
       srow >> index.p_cnt;
 

@@ -56,11 +56,6 @@ namespace wnb
       throw std::runtime_error("Symbol NOT FOUND.");
     }
 
-    pos_t get_pos(const char& c) const
-    {
-      return get_pos_from_char(c);
-    }
-
   public:
     pos_i2of_t  pos_maps;
     std::size_t indice_offset[POS_ARRAY_SIZE];
