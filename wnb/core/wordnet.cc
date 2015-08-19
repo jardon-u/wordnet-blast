@@ -9,7 +9,7 @@
 #include "boost/iostreams/device/null.hpp"
 
 #include "wordnet.hh"
-#include "../std_ext.hh"
+#include "std_ext.hh"
 # include "load_wordnet.hh"
 
 namespace wnb

@@ -11,7 +11,7 @@
 #include <boost/progress.hpp>
 #include <boost/algorithm/string.hpp>
 
-#include "../std_ext.hh"
+#include "std_ext.hh"
 #include "wordnet.hh"
 #include "pos_t.hh"
 

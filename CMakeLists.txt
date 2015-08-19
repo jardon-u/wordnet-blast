@@ -35,9 +35,6 @@ ADD_CUSTOM_TARGET(dist
   | bzip2 > ${CMAKE_BINARY_DIR}/${ARCHIVE_NAME}.tar.bz2
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
-ADD_CUSTOM_TARGET(check
-  COMMAND ./check/check.sh ./check/list.txt)
-
 
 ## Compiler flags
 IF (CMAKE_COMPILER_IS_GNUCXX)
@@ -52,7 +49,7 @@ SET(WNB_SRCS wnb/core/wordnet.cc
 			 wnb/core/load_wordnet.hh
 			 wnb/core/info_helper.hh
 			 wnb/core/pos_t.hh
-             wnb/std_ext.hh
+             wnb/core/std_ext.hh
 			 )
 
 # Static library
@@ -60,21 +57,20 @@ SET(WNB_SRCS wnb/core/wordnet.cc
 ADD_LIBRARY(wnb ${WNB_SRCS})
 TARGET_INCLUDE_DIRECTORIES(wnb PUBLIC ${Boost_INCLUDE_DIR})
 TARGET_LINK_LIBRARIES(wnb ${Boost_LIBRARIES})
-SET_TARGET_PROPERTIES(wnb PROPERTIES DEBUG_POSTFIX d)
+SET_TARGET_PROPERTIES(wnb PROPERTIES 
+    DEBUG_POSTFIX d
+    PUBLIC_HEADER "wnb/core/wordnet.hh;wnb/core/pos_t.hh;wnb/core/info_helper.hh;${CMAKE_CURRENT_BINARY_DIR}/wnb_export.h;"
+    LINKER_LANGUAGE CXX)
 
-IF (BUILD_SHARED_LIBS)
-    message(STATUS "<<<<<| ${PROJECT_BINARY_DIR}")
-    include_directories("${PROJECT_BINARY_DIR}")
-    include (GenerateExportHeader) 
-    generate_export_header(wnb)
+include_directories("${PROJECT_BINARY_DIR}")
+include (GenerateExportHeader) 
+generate_export_header(wnb)
+
+OPTION(BUILD_TESTS "Build wnb tests/examples" OFF)
+IF (BUILD_TESTS)
+    ADD_SUBDIRECTORY(tests)
 ENDIF()
 
-# Executable
-#--------------------------------------------------
-ADD_EXECUTABLE (wntest wnb/main.cc)
-TARGET_INCLUDE_DIRECTORIES(wntest PUBLIC ${PROJECT_SOURCE_DIR})
-TARGET_LINK_LIBRARIES(wntest wnb)
-SET_TARGET_PROPERTIES(wntest PROPERTIES DEBUG_POSTFIX d)
 
 # Install targets
 #--------------------------------------------------
@@ -83,22 +79,18 @@ set(HEADERS   wnb/core/info_helper.hh
               wnb/core/wordnet.hh
               wnb/core/pos_t.hh
               wnb/core/load_wordnet.hh
-              wnb/bfs.hh
-              wnb/nltk_similarity.hh
-              wnb/std_ext.hh
+              wnb/core/std_ext.hh
+              wnb/utils/bfs.hh
+              wnb/utils/nltk_similarity.hh
               ) 
                
 install(TARGETS wnb
   RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" COMPONENT bin
   LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" COMPONENT shlib
   ARCHIVE DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" COMPONENT lib  
+  PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_PREFIX}/include/wnb/core"
   COMPONENT wnb)
   
-install(TARGETS wntest
-  RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" COMPONENT bin
-  LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" COMPONENT shlib
-  ARCHIVE DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" COMPONENT lib  
-  COMPONENT wntest)
   
 foreach(HEADER ${HEADERS}) 
    string(REGEX MATCH "(.*)[/\\]" DIR ${HEADER}) 

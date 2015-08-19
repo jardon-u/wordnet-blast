@@ -9,8 +9,8 @@
 #include <wnb/core/wordnet.hh>
 #include <wnb/core/load_wordnet.hh>
 #include <wnb/core/info_helper.hh>
-#include <wnb/nltk_similarity.hh>
-#include <wnb/std_ext.hh>
+#include <wnb/utils/nltk_similarity.hh>
+#include <wnb/core/std_ext.hh>
 
 using namespace wnb;
 using namespace boost;
