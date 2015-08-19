@@ -62,6 +62,13 @@ TARGET_INCLUDE_DIRECTORIES(wnb PUBLIC ${Boost_INCLUDE_DIR})
 TARGET_LINK_LIBRARIES(wnb ${Boost_LIBRARIES})
 SET_TARGET_PROPERTIES(wnb PROPERTIES DEBUG_POSTFIX d)
 
+IF (BUILD_SHARED_LIBS)
+    message(STATUS "<<<<<| ${PROJECT_BINARY_DIR}")
+    include_directories("${PROJECT_BINARY_DIR}")
+    include (GenerateExportHeader) 
+    generate_export_header(wnb)
+ENDIF()
+
 # Executable
 #--------------------------------------------------
 ADD_EXECUTABLE (wntest wnb/main.cc)

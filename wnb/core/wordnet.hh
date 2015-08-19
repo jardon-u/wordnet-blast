@@ -11,6 +11,7 @@
 # include <boost/graph/graph_traits.hpp>
 # include <boost/graph/adjacency_list.hpp>
 
+# include "wnb_export.h"
 # include "pos_t.hh"
 # include "info_helper.hh"
 
@@ -74,7 +75,7 @@ namespace wnb
 
 
   /// Wordnet interface class
-  struct wordnet
+  struct WNB_EXPORT wordnet
   {
     typedef boost::adjacency_list<boost::vecS, boost::vecS,
                                   boost::bidirectionalS,

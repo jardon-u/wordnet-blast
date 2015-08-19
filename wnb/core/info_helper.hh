@@ -5,6 +5,7 @@
 # include <stdexcept>
 # include <map>
 
+# include "wnb_export.h"
 # include "pos_t.hh"
 
 namespace wnb
@@ -66,8 +67,8 @@ namespace wnb
   };
 
   /// Create a new info_help based on wordnet data located in dn (../dict/)
-  info_helper preprocess_wordnet(const std::string& dn);
-  void preprocess_wordnet(const std::string& dn, info_helper& info);
+  WNB_EXPORT info_helper preprocess_wordnet(const std::string& dn);
+  WNB_EXPORT void preprocess_wordnet(const std::string& dn, info_helper& info);
 
 } // end of namespace wnb
 
