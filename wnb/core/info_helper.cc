@@ -70,14 +70,14 @@ namespace wnb
   const std::size_t info_helper::cnts[info_helper::NUMPARTS] = { 0, 8, 8, 4, 0, 0 };
 
   // Forward declaration
-  std::unordered_map<std::size_t, std::size_t> preprocess_data(const std::string& fn);
+  void preprocess_data(const std::string& fn, info_helper::i2of_t&);
 
   /// Constructor
   info_helper::info_helper(const std::string& dn) {
-      pos_maps[N] = preprocess_data((dn + "data.noun")); // noun_map
-      pos_maps[V] = preprocess_data((dn + "data.verb")); // verb_map
-      pos_maps[A] = preprocess_data((dn + "data.adj"));  // adj_map
-      pos_maps[R] = preprocess_data((dn + "data.adv"));  // adv_map
+      preprocess_data((dn + "data.noun"), pos_maps[N]); // noun_map
+      preprocess_data((dn + "data.verb"), pos_maps[V]); // verb_map
+      preprocess_data((dn + "data.adj"), pos_maps[A]); // adj_map
+      preprocess_data((dn + "data.adv"), pos_maps[R]); // adv_map
       this->update_pos_maps();
   }
 
@@ -116,10 +116,9 @@ namespace wnb
   // Function definitions
 
   // Return relation between synset indices and offsets
-  std::unordered_map<std::size_t, std::size_t>
-  preprocess_data(const std::string& fn)
+  void
+  preprocess_data(const std::string& fn, info_helper::i2of_t& map)
   {
-    std::unordered_map<std::size_t, std::size_t> map;
     std::ifstream file(fn.c_str());
     if (!file.is_open())
       throw std::runtime_error("preprocess_data: File not found: " + fn);
@@ -149,7 +148,6 @@ namespace wnb
     } while (std::getline(file, row));
 
     file.close();
-    return map;
   }
 
 } // end of namespace wnb
