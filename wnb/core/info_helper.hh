@@ -25,8 +25,8 @@ namespace wnb
     static const std::size_t  offsets[NUMPARTS];
     static const std::size_t  cnts[NUMPARTS];
 
-    typedef std::map<std::size_t, std::size_t>       i2of_t;     ///< indice/offset correspondences
-    typedef std::map<pos_t, i2of_t> pos_i2of_t; ///< pos / map  correspondences
+    typedef std::map<std::size_t, std::size_t> i2of_t;  ///< indice/offset correspondences
+    typedef std::map<pos_t, i2of_t> pos_i2of_t;  ///< pos / map  correspondences
 
     /// Constructor
     info_helper() { }
@@ -34,38 +34,33 @@ namespace wnb
     /// Compute the number of synsets (i.e. the number of vertex in the graph)
     std::size_t nb_synsets() const;
 
-    // Given a pos return the starting indice in the graph
-    std::size_t get_indice_offset(pos_t pos)
+    /// Given a pos return the starting indice in the graph
+    std::size_t get_indice_offset(pos_t pos) const
     {
       return indice_offset[pos];
     };
 
     /// Helper function computing global indice in graph from local offset
-    std::size_t compute_indice(std::size_t offset, pos_t pos);
+    std::size_t compute_indice(std::size_t offset, pos_t pos) const;
 
     /// Update a map allowing one to get the correct map given a pos
     void update_pos_maps();
 
-    std::size_t get_symbol(const std::string& ps)
+    std::size_t get_symbol(const std::string& ps) const
     {
       for (std::size_t i = 0; i < NB_SYMBOLS; i++)
-        if (ps == symbols[i])
-          return i;
+        if (ps == symbols[i]) {
+            return i;
+        }
       throw std::runtime_error("Symbol NOT FOUND.");
     }
 
-    pos_t get_pos(const char& c)
+    pos_t get_pos(const char& c) const
     {
       return get_pos_from_char(c);
     }
 
   public:
-
-    // i2of_t adj_map;
-    // i2of_t adv_map;
-    // i2of_t noun_map;
-    // i2of_t verb_map;
-
     pos_i2of_t  pos_maps;
     std::size_t indice_offset[POS_ARRAY_SIZE];
   };
@@ -74,7 +69,7 @@ namespace wnb
   info_helper preprocess_wordnet(const std::string& dn);
   void preprocess_wordnet(const std::string& dn, info_helper& info);
 
-} // end of namespace wncpp
+} // end of namespace wnb
 
 #endif /* _INFO_HELPER_HH */
 

@@ -95,15 +95,10 @@ namespace wnb
 
   }
 
-  std::size_t info_helper::compute_indice(std::size_t offset, pos_t pos)
+  std::size_t info_helper::compute_indice(std::size_t offset, pos_t pos) const
   {
-    if (pos == S)
-      pos = A;
-    std::map<std::size_t, std::size_t>& map = pos_maps[pos];
-
-    assert(pos <= 5 && pos > 0);
-
-    return indice_offset[pos] + map[offset];
+    if (pos == S) { pos = A; }
+    return indice_offset[pos] + pos_maps[pos][offset];
   }
 
   // Function definitions
