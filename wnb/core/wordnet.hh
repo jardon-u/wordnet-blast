@@ -102,7 +102,7 @@ namespace wnb
         std::vector<index> index_list;    ///< index list // FIXME: use a map
         graph              _wordnet_graph; ///< synsets graph
 
-        std::map<pos_t, exc_t> exc;
+        exc_t exc[POS_ARRAY_SIZE];
   };
 
 } // end of namespace wnb

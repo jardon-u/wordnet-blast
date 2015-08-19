@@ -223,9 +223,8 @@ namespace wnb
     }
 
     // Parse <pos>.exc files
-    void load_wordnet_exc(const std::string& dn, std::string cat, std::map<pos_t, wordnet::exc_t>& exc_)
+    void load_wordnet_exc(const std::string& fn, wordnet::exc_t& exc)
     {
-      std::map<std::string, std::string>& exc = exc_[get_pos_from_name(cat)];
       std::function<void(const std::string&)> action = [&exc](const std::string& row) {        
         std::stringstream srow(row);
         std::string key, value;
@@ -234,7 +233,6 @@ namespace wnb
 
         exc[key] = value;
       };
-      std::string fn = dn + cat + ".exc";
       work_wordnet_file(fn, action);
     }
 
@@ -333,7 +331,7 @@ namespace wnb
         ++show_progress;
         load_wordnet_index((dn + "index." + item), wn.info(), wn.index_list);
         ++show_progress;
-        load_wordnet_exc(dn, item, wn.exc);
+        load_wordnet_exc((dn + item + ".exc"), wn.exc[get_pos_from_name(item)]);
         ++show_progress;        
     }
     std::ios_base::sync_with_stdio(true);

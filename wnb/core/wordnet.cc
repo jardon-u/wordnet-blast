@@ -115,11 +115,9 @@ namespace wnb
   wordnet::morphword(const std::string& word, pos_t pos) const
   {
     // first look for word on exception list
-	std::map<pos_t, exc_t>::const_iterator it_pos = exc.find(pos);
-	if (it_pos != exc.end()) {
-		exc_t::const_iterator it = it_pos->second.find(word);
-		if (it != it_pos->second.end())
-			return it->second; // found in exception list
+    exc_t::const_iterator it = exc[pos].find(word);
+    if (it != exc[pos].end()) {
+        return it->second; // found in exception list
 	}
 
     std::string tmpbuf;

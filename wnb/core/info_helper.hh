@@ -37,7 +37,6 @@ namespace wnb
     }
 
     typedef std::unordered_map<std::size_t, std::size_t> i2of_t;  ///< indice/offset correspondences
-    //typedef std::map<pos_t, i2of_t> pos_i2of_t;  ///< pos / map  correspondences
 
     /// Constructor
     info_helper(const std::string& dn);
@@ -61,7 +60,6 @@ namespace wnb
 
   public:
     i2of_t pos_maps[POS_ARRAY_SIZE];
-    //pos_i2of_t  pos_maps;
     std::size_t indice_offset[POS_ARRAY_SIZE];
   };
 
