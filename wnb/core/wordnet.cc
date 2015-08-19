@@ -76,7 +76,7 @@ namespace wnb
       {
         for (std::size_t i = 0; i < it->synset_ids.size(); i++)
         {
-          int id = it->synset_ids[i];
+          std::size_t id = it->synset_ids[i];
           synsets.push_back(wordnet_graph[id]);
         }
       }
@@ -99,11 +99,11 @@ namespace wnb
   }
 
   std::string
-  wordnet::wordbase(const std::string& word, int ender) const
+  wordnet::wordbase(const std::string& word, std::size_t ender) const
   {
     if (ext::ends_with(word, info.sufx[ender]))
     {
-      int sufxlen = info.sufx[ender].size();
+      std::size_t sufxlen = info.sufx[ender].size();
       std::string strOut = word.substr(0, word.size() - sufxlen);
       if (!info.addr[ender].empty())
         strOut += info.addr[ender];
@@ -134,7 +134,7 @@ namespace wnb
 
     std::string tmpbuf;
     std::string end;
-    int cnt = 0;
+    std::size_t cnt = 0;
 
     if (pos == R)
       return ""; // Only use exception list for adverbs
@@ -162,11 +162,11 @@ namespace wnb
 
     if (pos != pos_t::UNKNOWN) 
     {
-      int offset  = info.offsets[pos];
-      int pos_cnt = info.cnts[pos];
+      std::size_t offset = info.offsets[pos];
+      std::size_t pos_cnt = info.cnts[pos];
 
       std::string morphed;
-      for  (int i = 0; i < pos_cnt; i++)
+      for (std::size_t i = 0; i < pos_cnt; i++)
       {
         morphed = wordbase(tmpbuf, (i + offset));
         if (morphed != tmpbuf && is_defined(morphed, pos))

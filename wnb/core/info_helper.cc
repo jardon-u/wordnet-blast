@@ -66,8 +66,8 @@ namespace wnb
     "", "", "e", "e"
   };
 
-  const int info_helper::offsets[info_helper::NUMPARTS] = { 0, 0, 8, 16, 0, 0 };
-  const int info_helper::cnts[info_helper::NUMPARTS]    = { 0, 8, 8, 4, 0, 0 };
+  const std::size_t info_helper::offsets[info_helper::NUMPARTS] = { 0, 0, 8, 16, 0, 0 };
+  const std::size_t info_helper::cnts[info_helper::NUMPARTS] = { 0, 8, 8, 4, 0, 0 };
 
   std::size_t
   info_helper::nb_synsets() const
@@ -95,11 +95,11 @@ namespace wnb
 
   }
 
-  int info_helper::compute_indice(int offset, pos_t pos)
+  std::size_t info_helper::compute_indice(std::size_t offset, pos_t pos)
   {
     if (pos == S)
       pos = A;
-    std::map<int,int>& map = pos_maps[pos];
+    std::map<std::size_t, std::size_t>& map = pos_maps[pos];
 
     assert(pos <= 5 && pos > 0);
 
@@ -110,10 +110,10 @@ namespace wnb
 
   // Return relation between synset indices and offsets
   static
-  std::map<int,int>
+  std::map<std::size_t, std::size_t>
   preprocess_data(const std::string& fn)
   {
-    std::map<int,int> map;
+    std::map<std::size_t, std::size_t> map;
     std::ifstream file(fn.c_str());
     if (!file.is_open())
       throw std::runtime_error("preprocess_data: File not found: " + fn);
@@ -138,7 +138,7 @@ namespace wnb
         std::stringstream srow(row);
         int offset;
         srow >> offset;
-        map.insert(std::pair<int, int>(offset, ind));
+        map.insert(std::pair<std::size_t, std::size_t>(offset, ind));
         ind++;
     } while (std::getline(file, row));
 

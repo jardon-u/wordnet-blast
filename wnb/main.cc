@@ -107,7 +107,7 @@ void print_synsets(pos_t pos, const wnb::index& idx, wordnet& wn)
 
   for (std::size_t i = 0; i < idx.synset_ids.size(); i++)
   {
-    int id = idx.synset_ids[i];
+    std::size_t id = idx.synset_ids[i];
     const synset& synset = wn.wordnet_graph[id];
 
     std::cout << i+1 << ". ";

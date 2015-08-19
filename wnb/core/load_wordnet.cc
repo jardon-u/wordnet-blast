@@ -54,8 +54,8 @@ namespace wnb
       //if (pos == S || synset.pos == S)
       //  return; //FIXME: check where are s synsets.
 
-      int u = synset.id;
-      int v = wn.info.compute_indice(synset_offset, pos);
+      std::size_t u = synset.id;
+      std::size_t v = wn.info.compute_indice(synset_offset, pos);
 
       ptr p;
       p.pointer_symbol = wn.info.get_symbol(pointer_symbol_);
@@ -269,18 +269,18 @@ namespace wnb
         std::vector<std::string> sk = ext::split(sense_key,'%');
         std::string word = sk.at(0);
         std::stringstream tmp(ext::split(sk.at(1), ':').at(0));
-        int ss_type;
+        std::size_t ss_type;
         tmp >> ss_type;
         pos_t pos =  (pos_t) ss_type;
 
         srow >> synset_offset;
 
         // Update synset info
-        int u = wn.info.compute_indice(synset_offset, pos);
-        int sense_number;
+        std::size_t u = wn.info.compute_indice(synset_offset, pos);
+        std::size_t sense_number;
         srow >> sense_number;
         wn.wordnet_graph[u].sense_number += sense_number;
-        int tag_cnt;
+        std::size_t tag_cnt;
         srow >> tag_cnt;
         if (tag_cnt != 0)
           wn.wordnet_graph[u].tag_cnts.push_back( make_pair(word,tag_cnt) );
@@ -317,13 +317,13 @@ namespace wnb
         // Get the pos of the lemma
         std::string word = ext::split(sense_key,'%').at(0);
         std::stringstream tmp(ext::split(ext::split(sense_key,'%').at(1), ':').at(0));
-        int ss_type;
+        std::size_t ss_type;
         tmp >> ss_type;
         pos_t pos = (pos_t) ss_type;
 
         // Update synset info
-        int synset_offset; // FIXME
-        int u = wn.info.compute_indice(synset_offset, pos);
+        std::size_t synset_offset; // FIXME
+        std::size_t u = wn.info.compute_indice(synset_offset, pos);
         wn.wordnet_graph[u].sense_number += sense_number;
         if (tag_cnt != 0)
           wn.wordnet_graph[u].tag_cnts.push_back( make_pair(word,tag_cnt) );
@@ -338,9 +338,11 @@ namespace wnb
     std::cout << "### Loading Wordnet";
     boost::progress_display show_progress(14);
 
+    std::ios_base::sync_with_stdio(false);
     for (auto &item : { "adj", "noun", "adv", "verb" }) {
         load_wordnet_cat(dn, item, wn, show_progress);
     }
+    std::ios_base::sync_with_stdio(true);
 
     load_wordnet_index_sense(dn, wn);
     show_progress += 1;

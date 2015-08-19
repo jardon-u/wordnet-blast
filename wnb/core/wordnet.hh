@@ -22,17 +22,17 @@ namespace wnb
   /// Synset
   struct synset
   {
-    int  lex_filenum;
+    std::size_t  lex_filenum;
     std::size_t  w_cnt;
     std::vector<std::string> words;
-    std::vector<int> lex_ids;
+    std::vector<std::size_t> lex_ids;
     std::size_t p_cnt;
     std::string gloss;
 
     // extra
     pos_t pos;        ///< pos (replace ss_type)
-    int id;           ///< unique identifier (replace synset_offset)
-    int sense_number; ///< http://wordnet.princeton.edu/man/senseidx.5WN.html
+    std::size_t id;           ///< unique identifier (replace synset_offset)
+    std::size_t sense_number; ///< http://wordnet.princeton.edu/man/senseidx.5WN.html
     std::vector<std::pair<std::string, int> > tag_cnts; ///< http://wordnet.princeton.edu/man/senseidx.5WN.html
 
     bool operator==(const synset& s) const { return (id == s.id);  }
@@ -44,9 +44,9 @@ namespace wnb
   struct ptr
   {
     //std::string pointer_symbol; ///< symbol of the relation
-    int pointer_symbol;
-    int source; ///< source word inside synset
-    int target; ///< target word inside synset
+    std::size_t pointer_symbol;
+    std::size_t source; ///< source word inside synset
+    std::size_t target; ///< target word inside synset
   };
 
 
@@ -60,10 +60,10 @@ namespace wnb
     std::size_t sense_cnt;
     float       tagsense_cnt;
     std::vector<std::string> ptr_symbols;
-    std::vector<int>         synset_offsets;
+    std::vector<std::size_t> synset_offsets;
 
     // extra
-    std::vector<int> synset_ids;
+    std::vector<std::size_t> synset_ids;
     pos_t pos;
 
     bool operator<(const index& b) const
@@ -92,7 +92,7 @@ namespace wnb
 	std::pair<std::vector<index>::const_iterator, std::vector<index>::const_iterator>
     get_indexes(const std::string& word) const;
 
-    std::string wordbase(const std::string& word, int ender) const;
+    std::string wordbase(const std::string& word, std::size_t ender) const;
 
     std::string morphword(const std::string& word, pos_t pos) const;
 

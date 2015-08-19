@@ -22,7 +22,7 @@ namespace wnb
       template <typename Edge>
       bool operator()(const Edge& e) const
       {
-        int p_s = get(m_pointer_symbol, e);
+        std::size_t p_s = get(m_pointer_symbol, e);
         return p_s == 1; // hypernyme (instance_hypernyme not used here)
       }
 
@@ -36,7 +36,7 @@ namespace wnb
   {
 
     typedef boost::property_map<wordnet::graph,
-                                int ptr::*>::const_type PointerSymbolMap;
+                                std::size_t ptr::*>::const_type PointerSymbolMap;
     typedef boost::filtered_graph<wordnet::graph,
                                   internal::hyper_edge<PointerSymbolMap> > G;
     typedef boost::graph_traits<G>::vertex_descriptor vertex;
