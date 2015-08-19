@@ -48,25 +48,26 @@ namespace wnb
                          int src,                     // word src
                          int trgt,                    // word target
                          synset& synset,              // source synset
-                         wordnet& wn)                 // our wordnet
+                         const info_helper& info,
+                         wordnet::graph& wordnet_graph)
     {
       //if (pos == S || synset.pos == S)
       //  return; //FIXME: check where are s synsets.
 
       std::size_t u = synset.id;
-      std::size_t v = wn.info.compute_indice(synset_offset, pos);
+      std::size_t v = info.compute_indice(synset_offset, pos);
 
       ptr p;
-      p.pointer_symbol = wn.info.get_symbol(pointer_symbol_);
+      p.pointer_symbol = info_helper::get_symbol(pointer_symbol_);
       p.source = src;
       p.target = trgt;
 
-      boost::add_edge(u,v, p, wn.wordnet_graph);
+      boost::add_edge(u,v, p, wordnet_graph);
     }
 
 
     // load ptrs
-    void load_data_row_ptrs(std::stringstream& srow, synset& synset, wordnet& wn)
+    void load_data_row_ptrs(std::stringstream& srow, synset& synset, const info_helper& info, wordnet::graph& wordnet_graph)
     {
       srow >> synset.p_cnt;
       for (std::size_t i = 0; i < synset.p_cnt; i++)
@@ -98,13 +99,13 @@ namespace wnb
         ssrc >> std::hex >> src >> std::dec;
         strgt >> std::hex >> trgt >> std::dec;
 
-        add_wordnet_rel(pointer_symbol_, synset_offset, pos, src, trgt, synset, wn);
+        add_wordnet_rel(pointer_symbol_, synset_offset, pos, src, trgt, synset, info, wordnet_graph);
       }
     }
 
 
     // Load a synset and add it to the wordnet class.
-    void load_data_row(const std::string& row, wordnet& wn)
+    void load_data_row(const std::string& row, const info_helper& info, wordnet::graph& wordnet_graph)
     {
       //http://wordnet.princeton.edu/wordnet/man/wndb.5WN.html#sect3
       // synset_offset lex_filenum ss_type w_cnt word lex_id [word lex_id...] p_cnt [ptr...] [frames...] | gloss
@@ -119,13 +120,13 @@ namespace wnb
 
       // extra information
       synset.pos = get_pos_from_char(ss_type);
-      synset.id  = wn.info.compute_indice(synset_offset, synset.pos);
+      synset.id  = info.compute_indice(synset_offset, synset.pos);
 
       // words
       load_data_row_words(srow, synset);
 
       // ptrs
-      load_data_row_ptrs(srow, synset, wn);
+      load_data_row_ptrs(srow, synset, info, wordnet_graph);
 
       //frames (skipped)
       std::string tmp;
@@ -138,7 +139,7 @@ namespace wnb
       synset.sense_number = 0;
 
       // Add synset to graph
-      wn.wordnet_graph[synset.id] = synset;
+      wordnet_graph[synset.id] = synset;
     }
 
     void work_wordnet_file(const std::string& file, std::function<void(const std::string&)>& row_action)
@@ -170,7 +171,7 @@ namespace wnb
 
 
     //FIXME: It seems possible to replace synset_offsets with indice here.
-    void load_index_row(const std::string& row, wordnet& wn)
+    void load_index_row(const std::string& row, const info_helper& info, std::vector<index>& index_list)
     {
       // lemma pos synset_cnt p_cnt [ptr_symbol...] sense_cnt tagsense_cnt synset_offset [synset_offset...]
       index index;
@@ -196,36 +197,36 @@ namespace wnb
       while (srow >> tmp_o)
       {
         index.synset_offsets.push_back(tmp_o);
-        index.synset_ids.push_back(wn.info.compute_indice(tmp_o, index.pos)); // extra data
+        index.synset_ids.push_back(info.compute_indice(tmp_o, index.pos)); // extra data
       }
 
       //add synset to index list
-      wn.index_list.push_back(index);
+      index_list.push_back(index);
     }
 
     // Parse data.<pos> files
-    void load_wordnet_data(const std::string& fn, wordnet& wn)
+    void load_wordnet_data(const std::string& fn, const info_helper& info, wordnet::graph& wordnet_graph)
     {
-        std::function<void(const std::string&)> action = [&wn](const std::string& row) {
-            load_data_row(row, wn);
+        std::function<void(const std::string&)> action = [&info, &wordnet_graph](const std::string& row) {
+            load_data_row(row, info, wordnet_graph);
         };
         work_wordnet_file(fn, action);
     }
 
     // Parse index.<pos> files
-    void load_wordnet_index(const std::string& fn, wordnet& wn)
+    void load_wordnet_index(const std::string& fn, const info_helper& info, std::vector<index>& index_list)
     {
-      std::function<void(const std::string&)> action = [&wn](const std::string& row) {
-        load_index_row(row, wn);
+      std::function<void(const std::string&)> action = [&info, &index_list](const std::string& row) {
+        load_index_row(row, info, index_list);
       };
       work_wordnet_file(fn, action);
     }
 
     // Parse <pos>.exc files
-    void load_wordnet_exc(const std::string& dn, std::string cat, wordnet& wn)
+    void load_wordnet_exc(const std::string& dn, std::string cat, std::map<pos_t, wordnet::exc_t>& exc_)
     {
-      std::map<std::string, std::string>& exc = wn.exc[get_pos_from_name(cat)];
-      std::function<void(const std::string&)> action = [&wn, &exc](const std::string& row) {        
+      std::map<std::string, std::string>& exc = exc_[get_pos_from_name(cat)];
+      std::function<void(const std::string&)> action = [&exc](const std::string& row) {        
         std::stringstream srow(row);
         std::string key, value;
         srow >> key;
@@ -237,19 +238,8 @@ namespace wnb
       work_wordnet_file(fn, action);
     }
 
-    void load_wordnet_cat(const std::string dn, std::string cat, wordnet& wn, 
-                          boost::progress_display& show_progress)
-    {
-      load_wordnet_data((dn + "data." + cat), wn);
-      ++show_progress;
-      load_wordnet_index((dn + "index." + cat), wn);
-      ++show_progress;
-      load_wordnet_exc(dn, cat, wn);
-      ++show_progress;
-    }
-
     // FIXME: this file is not in all packaged version of wordnet
-    void load_wordnet_index_sense(const std::string& dn, wordnet& wn)
+    void load_wordnet_index_sense(const std::string& dn, const info_helper& info, wordnet::graph& wordnet_graph)
     {
       std::string fn = dn + "index.sense";
       std::ifstream fin(fn.c_str());
@@ -275,14 +265,14 @@ namespace wnb
         srow >> synset_offset;
 
         // Update synset info
-        std::size_t u = wn.info.compute_indice(synset_offset, pos);
+        std::size_t u = info.compute_indice(synset_offset, pos);
         std::size_t sense_number;
         srow >> sense_number;
-        wn.wordnet_graph[u].sense_number += sense_number;
+        wordnet_graph[u].sense_number += sense_number;
         std::size_t tag_cnt;
         srow >> tag_cnt;
         if (tag_cnt != 0)
-          wn.wordnet_graph[u].tag_cnts.push_back( make_pair(word,tag_cnt) );
+          wordnet_graph[u].tag_cnts.push_back( make_pair(word,tag_cnt) );
 
         //if (synset_offset == 2121620)
         //  std::cout << u << " " << word << " " << synset_offset << " "
@@ -293,7 +283,7 @@ namespace wnb
 
     // wn -over used info in cntlist even if this is deprecated
     // It is ok not to FIX and use this function
-    void load_wordnet_cntlist(const std::string& dn, wordnet& wn)
+    void load_wordnet_cntlist(const std::string& dn, const info_helper& info, wordnet::graph& wordnet_graph)
     {
       std::string fn = dn + "cntlist";
       std::ifstream fin(fn.c_str());
@@ -322,10 +312,10 @@ namespace wnb
 
         // Update synset info
         std::size_t synset_offset; // FIXME
-        std::size_t u = wn.info.compute_indice(synset_offset, pos);
-        wn.wordnet_graph[u].sense_number += sense_number;
+        std::size_t u = info.compute_indice(synset_offset, pos);
+        wordnet_graph[u].sense_number += sense_number;
         if (tag_cnt != 0)
-          wn.wordnet_graph[u].tag_cnts.push_back( make_pair(word,tag_cnt) );
+          wordnet_graph[u].tag_cnts.push_back( make_pair(word,tag_cnt) );
       }
     }
 
@@ -338,12 +328,17 @@ namespace wnb
     boost::progress_display show_progress(13);
 
     std::ios_base::sync_with_stdio(false);
-    for (auto &item : { "adj", "noun", "adv", "verb" }) {
-        load_wordnet_cat(dn, item, wn, show_progress);
+    for (auto &item : { "adj", "noun", "adv", "verb" }) {       
+        load_wordnet_data((dn + "data." + item), wn.info(), wn._wordnet_graph);
+        ++show_progress;
+        load_wordnet_index((dn + "index." + item), wn.info(), wn.index_list);
+        ++show_progress;
+        load_wordnet_exc(dn, item, wn.exc);
+        ++show_progress;        
     }
     std::ios_base::sync_with_stdio(true);
 
-    load_wordnet_index_sense(dn, wn);
+    load_wordnet_index_sense(dn, wn.info(), wn._wordnet_graph);
     show_progress += 1;
    
     std::cout << std::endl;

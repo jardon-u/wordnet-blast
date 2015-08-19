@@ -70,35 +70,39 @@ namespace wnb
 
 
   /// Wordnet interface class
-  struct WNB_EXPORT wordnet
+  class WNB_EXPORT wordnet
   {
-    typedef boost::adjacency_list<boost::vecS, boost::vecS,
+    public:
+        typedef boost::adjacency_list<boost::vecS, boost::vecS,
                                   boost::bidirectionalS,
                                   synset, ptr> graph; ///< boost graph type
+        typedef std::map<std::string, std::string> exc_t;
+        friend void load_wordnet(const std::string& dn, wordnet& wn);
+    public:
+        /// Constructor
+        wordnet(const std::string& wordnet_dir, bool verbose = false);
 
-    /// Constructor
-    wordnet(const std::string& wordnet_dir, bool verbose = false);
-    wordnet(const std::string& wordnet_dir, const info_helper& info, bool verbose = false);
+        /// Return synsets matching word
+        std::vector<synset> get_synsets(const std::string& word, pos_t pos = pos_t::UNKNOWN) const;
+        //FIXME: todo
+        std::vector<synset> get_synset(const std::string& word, char pos, int i) const;
 
-    /// Return synsets matching word
-    std::vector<synset> get_synsets(const std::string& word, pos_t pos = pos_t::UNKNOWN) const;
-    //FIXME: todo
-    std::vector<synset> get_synset(const std::string& word, char pos, int i) const;
+	    std::pair<std::vector<index>::const_iterator, std::vector<index>::const_iterator>
+        get_indexes(const std::string& word) const;
 
-	std::pair<std::vector<index>::const_iterator, std::vector<index>::const_iterator>
-    get_indexes(const std::string& word) const;
+        std::string wordbase(const std::string& word, std::size_t ender) const;
 
-    std::string wordbase(const std::string& word, std::size_t ender) const;
+        std::string morphword(const std::string& word, pos_t pos) const;
 
-    std::string morphword(const std::string& word, pos_t pos) const;
+        const info_helper& info() const { return _info; };
+        const graph& wordnet_graph() const { return _wordnet_graph; };
+    protected:
+        bool               _verbose;
+        info_helper        _info;          ///< helper object
+        std::vector<index> index_list;    ///< index list // FIXME: use a map
+        graph              _wordnet_graph; ///< synsets graph
 
-    std::vector<index> index_list;    ///< index list // FIXME: use a map
-    graph              wordnet_graph; ///< synsets graph
-    info_helper        info;          ///< helper object
-    bool               _verbose;
-
-    typedef std::map<std::string,std::string> exc_t;
-    std::map<pos_t, exc_t> exc;
+        std::map<pos_t, exc_t> exc;
   };
 
 } // end of namespace wnb

@@ -47,8 +47,8 @@ namespace wnb
   public:
 
     nltk_similarity(const wordnet& wn)
-      : filter(get(&ptr::pointer_symbol, wn.wordnet_graph)),
-        fg(wn.wordnet_graph, filter)
+      : filter(get(&ptr::pointer_symbol, wn.wordnet_graph())),
+        fg(wn.wordnet_graph(), filter)
     { }
 
     /// Get list of hypernyms of s along with distance to s

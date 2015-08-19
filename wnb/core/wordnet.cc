@@ -24,7 +24,9 @@ namespace wnb
 
   //FIXME: Make (smart) use of fs::path
   wordnet::wordnet(const std::string& wordnet_dir, bool verbose)
-    : _verbose(verbose)
+      : _info(wordnet_dir),
+        _wordnet_graph(_info.nb_synsets()),
+        _verbose(verbose)
   {
     auto oldbuf = std::cout.rdbuf();
     boost::iostreams::stream_buffer< boost::iostreams::null_sink > null_buff{ boost::iostreams::null_sink() };
@@ -33,40 +35,15 @@ namespace wnb
     }
     std::cout << wordnet_dir << std::endl;
 
-    preprocess_wordnet(wordnet_dir, info);
-    wordnet_graph = graph(info.nb_synsets());
     load_wordnet(wordnet_dir, *this);
     std::stable_sort(index_list.begin(), index_list.end(), index_compare);
 
-    std::cout << "nb_synsets: " << info.nb_synsets() << std::endl;
+    std::cout << "nb_synsets: " << _info.nb_synsets() << std::endl;
     if (!_verbose) {
         std::cout.rdbuf(oldbuf);
     }
-    //FIXME: this check is only valid for Wordnet 3.0
-    //assert(info.nb_synsets() == 142335);//117659);
   }
   
-
-  wordnet::wordnet(const std::string& wordnet_dir, const info_helper& info_, bool verbose)
-      : _verbose(verbose),
-        info(info_),
-        wordnet_graph(info_.nb_synsets())
-  {
-      auto oldbuf = std::cout.rdbuf();
-      boost::iostreams::stream_buffer< boost::iostreams::null_sink > null_buff{ boost::iostreams::null_sink() };
-      if (!_verbose) {
-          std::cout.rdbuf(&null_buff);
-      }
-      std::cout << wordnet_dir << std::endl;
-
-      load_wordnet(wordnet_dir, *this);
-      std::stable_sort(index_list.begin(), index_list.end(), index_compare);
-
-      std::cout << "nb_synsets: " << info.nb_synsets() << std::endl;
-      if (!_verbose) {
-          std::cout.rdbuf(oldbuf);
-      }
-  }
 
   std::vector<synset>
   wordnet::get_synsets(const std::string& word, pos_t pos) const
@@ -90,7 +67,7 @@ namespace wnb
         for (std::size_t i = 0; i < it->synset_ids.size(); i++)
         {
           std::size_t id = it->synset_ids[i];
-          synsets.push_back(wordnet_graph[id]);
+          synsets.push_back(_wordnet_graph[id]);
         }
       }
     }
@@ -114,12 +91,12 @@ namespace wnb
   std::string
   wordnet::wordbase(const std::string& word, std::size_t ender) const
   {
-    if (ext::ends_with(word, info.sufx[ender]))
+    if (ext::ends_with(word, _info.sufx[ender]))
     {
-      std::size_t sufxlen = info.sufx[ender].size();
+      std::size_t sufxlen = _info.sufx[ender].size();
       std::string strOut = word.substr(0, word.size() - sufxlen);
-      if (!info.addr[ender].empty())
-        strOut += info.addr[ender];
+      if (!_info.addr[ender].empty())
+        strOut += _info.addr[ender];
       return strOut;
     }
     return word;
@@ -175,8 +152,8 @@ namespace wnb
 
     if (pos != pos_t::UNKNOWN) 
     {
-      std::size_t offset = info.offsets[pos];
-      std::size_t pos_cnt = info.cnts[pos];
+      std::size_t offset = _info.offsets[pos];
+      std::size_t pos_cnt = _info.cnts[pos];
 
       std::string morphed;
       for (std::size_t i = 0; i < pos_cnt; i++)

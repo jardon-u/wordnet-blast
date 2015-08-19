@@ -69,12 +69,24 @@ namespace wnb
   const std::size_t info_helper::offsets[info_helper::NUMPARTS] = { 0, 0, 8, 16, 0, 0 };
   const std::size_t info_helper::cnts[info_helper::NUMPARTS] = { 0, 8, 8, 4, 0, 0 };
 
+  // Forward declaration
+  std::unordered_map<std::size_t, std::size_t> preprocess_data(const std::string& fn);
+
+  /// Constructor
+  info_helper::info_helper(const std::string& dn) {
+      pos_maps[N] = preprocess_data((dn + "data.noun")); // noun_map
+      pos_maps[V] = preprocess_data((dn + "data.verb")); // verb_map
+      pos_maps[A] = preprocess_data((dn + "data.adj"));  // adj_map
+      pos_maps[R] = preprocess_data((dn + "data.adv"));  // adv_map
+      this->update_pos_maps();
+  }
+
   std::size_t
   info_helper::nb_synsets() const
   {
       std::size_t sum = 0;
       for (auto &m : pos_maps) {
-          sum += m.second.size();
+          sum += m.size();
       }
       return sum;
       //return adj_map.size() + adv_map.size() + noun_map.size() + verb_map.size();
@@ -98,17 +110,16 @@ namespace wnb
   std::size_t info_helper::compute_indice(std::size_t offset, pos_t pos) const
   {
     if (pos == S) { pos = A; }
-    auto map = pos_maps.at(pos);
-    return indice_offset[pos] + map.at(offset);
+    return indice_offset[pos] + pos_maps[pos].at(offset);
   }
 
   // Function definitions
 
   // Return relation between synset indices and offsets
-  std::map<std::size_t, std::size_t>
+  std::unordered_map<std::size_t, std::size_t>
   preprocess_data(const std::string& fn)
   {
-    std::map<std::size_t, std::size_t> map;
+    std::unordered_map<std::size_t, std::size_t> map;
     std::ifstream file(fn.c_str());
     if (!file.is_open())
       throw std::runtime_error("preprocess_data: File not found: " + fn);
@@ -139,25 +150,6 @@ namespace wnb
 
     file.close();
     return map;
-  }
-
-  info_helper
-  preprocess_wordnet(const std::string& dn)
-  {
-    info_helper info;
-    preprocess_wordnet(dn, info);
-    return info;
-  }
-
-  void
-  preprocess_wordnet(const std::string& dn, info_helper& info)
-  {
-      info.pos_maps[N] = preprocess_data((dn + "data.noun")); // noun_map
-      info.pos_maps[V] = preprocess_data((dn + "data.verb")); // verb_map
-      info.pos_maps[A] = preprocess_data((dn + "data.adj"));  // adj_map
-      info.pos_maps[R] = preprocess_data((dn + "data.adv"));  // adv_map
-
-      info.update_pos_maps();
   }
 
 } // end of namespace wnb

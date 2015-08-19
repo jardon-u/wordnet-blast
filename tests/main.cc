@@ -108,7 +108,7 @@ void print_synsets(pos_t pos, const wnb::index& idx, wordnet& wn)
   for (std::size_t i = 0; i < idx.synset_ids.size(); i++)
   {
     std::size_t id = idx.synset_ids[i];
-    const synset& synset = wn.wordnet_graph[id];
+    const synset& synset = wn.wordnet_graph()[id];
 
     std::cout << i+1 << ". ";
     for (std::size_t k = 0; k < synset.tag_cnts.size(); k++)
@@ -169,9 +169,7 @@ int main(int argc, char ** argv)
   std::string wordnet_dir = argv[1];
   std::string test_file   = argv[2];
 
-  info_helper info;
-  preprocess_wordnet(wordnet_dir, info);
-  wordnet wn(wordnet_dir, info, true);
+  wordnet wn(wordnet_dir, true);
 
   // read test file
   std::string list = ext::read_file(test_file);

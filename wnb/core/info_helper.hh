@@ -4,6 +4,7 @@
 # include <string>
 # include <stdexcept>
 # include <map>
+# include <unordered_map>
 
 # include "wnb_export.h"
 # include "pos_t.hh"
@@ -26,11 +27,20 @@ namespace wnb
     static const std::size_t  offsets[NUMPARTS];
     static const std::size_t  cnts[NUMPARTS];
 
-    typedef std::map<std::size_t, std::size_t> i2of_t;  ///< indice/offset correspondences
-    typedef std::map<pos_t, i2of_t> pos_i2of_t;  ///< pos / map  correspondences
+    static std::size_t get_symbol(const std::string& ps)
+    {
+        for (std::size_t i = 0; i < NB_SYMBOLS; i++)
+            if (ps == symbols[i]) {
+                return i;
+            }
+        throw std::runtime_error("Symbol NOT FOUND.");
+    }
+
+    typedef std::unordered_map<std::size_t, std::size_t> i2of_t;  ///< indice/offset correspondences
+    //typedef std::map<pos_t, i2of_t> pos_i2of_t;  ///< pos / map  correspondences
 
     /// Constructor
-    info_helper() { }
+    info_helper(const std::string& dn);
 
     /// Compute the number of synsets (i.e. the number of vertex in the graph)
     std::size_t nb_synsets() const;
@@ -47,23 +57,13 @@ namespace wnb
     /// Update a map allowing one to get the correct map given a pos
     void update_pos_maps();
 
-    std::size_t get_symbol(const std::string& ps) const
-    {
-      for (std::size_t i = 0; i < NB_SYMBOLS; i++)
-        if (ps == symbols[i]) {
-            return i;
-        }
-      throw std::runtime_error("Symbol NOT FOUND.");
-    }
+
 
   public:
-    pos_i2of_t  pos_maps;
+    i2of_t pos_maps[POS_ARRAY_SIZE];
+    //pos_i2of_t  pos_maps;
     std::size_t indice_offset[POS_ARRAY_SIZE];
   };
-
-  /// Create a new info_help based on wordnet data located in dn (../dict/)
-  WNB_EXPORT info_helper preprocess_wordnet(const std::string& dn);
-  WNB_EXPORT void preprocess_wordnet(const std::string& dn, info_helper& info);
 
 } // end of namespace wnb
 
