@@ -105,7 +105,6 @@ namespace wnb
   // Function definitions
 
   // Return relation between synset indices and offsets
-  static
   std::map<std::size_t, std::size_t>
   preprocess_data(const std::string& fn)
   {
