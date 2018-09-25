@@ -1,0 +1,24 @@
+build: false
+
+environment:
+    PYTHON: "C:\\Python27"
+    PYTHON_VERSION: "2.7.8"
+    PYTHON_ARCH: "32"
+    PYTHONUNBUFFERED: 1
+
+    matrix:
+        - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+        - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+
+install:
+  - set PATH=%PATH%;%PYTHON%/Scripts/
+  - pip.exe install conan --upgrade
+  - conan user
+  - conan install boost/1.66.0@conan/stable
+
+test_script:
+  - dir
+  - for /f %%i in ('python boost_root.py') do set BOOST_ROOT=%%i
+  - mkdir build && cd build
+  - cmake .. -DBOOST_ROOT:PATH=%BOOST_ROOT% -DBUILD_TESTS:BOOL=ON -DCMAKE_INSTALL_PREFIX:PATH=install
+  - cmake --build . --target install

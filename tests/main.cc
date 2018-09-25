@@ -9,8 +9,8 @@
 #include <wnb/core/wordnet.hh>
 #include <wnb/core/load_wordnet.hh>
 #include <wnb/core/info_helper.hh>
-#include <wnb/nltk_similarity.hh>
-#include <wnb/std_ext.hh>
+#include <wnb/utils/nltk_similarity.hh>
+#include <wnb/core/std_ext.hh>
 
 using namespace wnb;
 using namespace boost;
@@ -23,7 +23,7 @@ bool usage(int argc, char ** argv)
     dir = std::string(argv[1]);
   if (argc != 3 || dir[dir.length()-1] != '/')
   {
-    std::cout << argv[0] << " .../wordnet_dir/ word_list_file" << std::endl;
+    std::cout << argv[0] << " ../data/wordnet3.1/dict/ word_list_file" << std::endl;
     return true;
   }
   return false;
@@ -90,9 +90,9 @@ void similarity_test(wordnet&                  wn,
     std::cout << wslist[i].w << " " << wslist[i].s << std::endl;
 }
 
-void print_synsets(pos_t pos, wnb::index& idx, wordnet& wn)
+void print_synsets(pos_t pos, const wnb::index& idx, wordnet& wn)
 {
-  std::string& mword = idx.lemma;
+  const std::string& mword = idx.lemma;
   std::cout << "\nOverview of " << get_name_from_pos(pos) << " " << mword << "\n\n";
   std::cout << "The " << get_name_from_pos(pos) << " " << mword << " has "
             << idx.synset_ids.size() << ((idx.synset_ids.size() == 1) ? " sense": " senses");
@@ -107,8 +107,8 @@ void print_synsets(pos_t pos, wnb::index& idx, wordnet& wn)
 
   for (std::size_t i = 0; i < idx.synset_ids.size(); i++)
   {
-    int id = idx.synset_ids[i];
-    const synset& synset = wn.wordnet_graph[id];
+    std::size_t id = idx.synset_ids[i];
+    const synset& synset = wn.wordnet_graph()[id];
 
     std::cout << i+1 << ". ";
     for (std::size_t k = 0; k < synset.tag_cnts.size(); k++)
@@ -133,9 +133,9 @@ void wn_like(wordnet& wn, const std::string& word, pos_t pos)
     return;
 
   typedef std::vector<wnb::index> vi;
-  std::pair<vi::iterator,vi::iterator> bounds = wn.get_indexes(word);
+  std::pair<vi::const_iterator, vi::const_iterator> bounds = wn.get_indexes(word);
 
-  for (vi::iterator it = bounds.first; it != bounds.second; it++)
+  for (vi::const_iterator it = bounds.first; it != bounds.second; it++)
   {
     if (pos != -1 && it->pos == pos)
     {
@@ -169,7 +169,7 @@ int main(int argc, char ** argv)
   std::string wordnet_dir = argv[1];
   std::string test_file   = argv[2];
 
-  wordnet wn(wordnet_dir);
+  wordnet wn(wordnet_dir, true);
 
   // read test file
   std::string list = ext::read_file(test_file);
